@@ -56,8 +56,8 @@ fun TourPage(viewModel: TourViewModel, navigateToDetails: (Int) -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background),
-        horizontalAlignment = Alignment.CenterHorizontally
+            .background(MaterialTheme.colorScheme.background)
+//        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         MeTourTopBar(
             query,
