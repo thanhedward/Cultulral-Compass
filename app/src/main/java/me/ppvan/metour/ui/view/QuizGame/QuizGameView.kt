@@ -1,21 +1,39 @@
 package me.ppvan.metour.ui.view.QuizGame
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardColors
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.RadioButton
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
@@ -27,11 +45,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import me.ppvan.metour.ui.component.TopAppBarMinimalTitle
+import me.ppvan.moon.utils.SlideTransition
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun QuizGameView(
     navController: NavHostController
@@ -44,147 +67,184 @@ fun QuizGameView(
     var currentQuestion by remember { mutableStateOf(questions.firstOrNull()) }
     var quizFinished by remember { mutableStateOf(false) }
 
-    if (!quizFinished) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(vertical = 10.dp, horizontal = 16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        ) {
-            currentQuestion?.let { question ->
-                Text(
-                    text = "Câu hỏi $currentQuestionNumber/10",
-                    fontSize = 30.sp,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier
-                        .padding(top = 26.dp)
-                )
-                LinearProgressIndicator(
-                    progress = progress / 10,
-                    color = Color.Green,
-                    modifier = Modifier
-                        .padding(top = 40.dp)
-                )
-                Card(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(140.dp)
-                        .padding(top = 40.dp)
-                        .background(Color.Gray),
-                    shape = RectangleShape
-                ) {
-                    Text(
-                        text = question.question,
-                        fontSize = 20.sp,
+    Scaffold(
+        modifier = Modifier.fillMaxSize(),
+        topBar = {
+            CenterAlignedTopAppBar(
+                navigationIcon = {
+                    IconButton(
+                        onClick = {navController.popBackStack()  }
+                    ) {
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, null)
+                    }
+                },
+                title = {
+
+                        Text(
+                            "Câu $currentQuestionNumber",
+                            maxLines = 2,
+                            overflow = TextOverflow.Ellipsis,
+                        )
+
+                },
+                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                    containerColor = Color.Transparent
+                ),
+            )
+        },
+        content = { contentPadding ->
+            Box(
+                modifier = Modifier
+                    .padding(contentPadding)
+                    .fillMaxSize()
+            ) {
+                if (!quizFinished) {
+                    Column(
                         modifier = Modifier
-                            .padding(top = 20.dp)
-                    )
-                }
-                Card(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(380.dp)
-                        .padding(top = 30.dp)
-                        .background(Color.White),
-                    shape = RoundedCornerShape(10.dp),
-                ) {
-                    Column (){
-                        question.options.forEach { option ->
-                            Row (
+                            .padding(vertical = 10.dp, horizontal = 16.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        Spacer(modifier = Modifier.height(20.dp))
+                        currentQuestion?.let { question ->
+                            LinearProgressIndicator(
+                                progress = { progress / 10 },
+                                modifier = Modifier
+                                    .height(30.dp)
+                                    .fillMaxWidth(),
+                                color = Color.Green,
+                                strokeCap = StrokeCap.Round
+                            )
+                            Card(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .padding(top = 30.dp, start = 16.dp, end = 16.dp)
-                                    .background(
-                                        Color.LightGray,
-                                        RoundedCornerShape(10.dp)
-                                    )
-                            ){
-                                RadioButton(
-                                    selected = selectedOption == option,
-                                    onClick = { selectedOption = option },
-                                    modifier = Modifier.clickable { selectedOption = option }
-                                )
+                                    .height(140.dp)
+                                    .padding(top = 40.dp),
+                                colors = CardColors(Color.White,Color.Black,Color.White,Color.Black),
+                                shape = RectangleShape
+                            ) {
                                 Text(
-                                    text = "$option",
+                                    text = question.question,
                                     fontSize = 20.sp,
-                                    fontWeight = FontWeight.Bold,
                                     modifier = Modifier
-                                        .align(Alignment.CenterVertically)
+                                        .padding(top = 20.dp)
+                                )
+                            }
+                            Card(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(380.dp)
+                                    .padding(top = 30.dp)
+                                    .background(Color.White),
+                                shape = RoundedCornerShape(10.dp),
+                            ) {
+                                Column (){
+                                    question.options.forEach { option ->
+                                        Row (
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .padding(top = 30.dp, start = 16.dp, end = 16.dp)
+                                                .background(
+                                                    Color.LightGray,
+                                                    RoundedCornerShape(10.dp)
+                                                )
+                                        ){
+                                            RadioButton(
+                                                selected = selectedOption == option,
+                                                onClick = { selectedOption = option },
+                                                modifier = Modifier.clickable { selectedOption = option }
+                                            )
+                                            Text(
+                                                text = "$option",
+                                                fontSize = 20.sp,
+                                                fontWeight = FontWeight.Bold,
+                                                modifier = Modifier
+                                                    .align(Alignment.CenterVertically)
+                                            )
+                                        }
+                                    }
+                                }
+                            }
+                            Button(
+                                onClick = {
+                                    if (selectedOption != null) {
+                                        if (question.correctAnswer == selectedOption)
+                                            score += 10
+                                    }
+                                    if (currentQuestionNumber < 10) {
+                                        progress += 1.0f
+                                        currentQuestionNumber += 1
+                                        selectedOption = null
+                                        currentQuestion = questions.getOrNull(currentQuestionNumber - 1)
+                                    }
+                                    else
+                                        quizFinished = true
+                                },
+                                shape = RoundedCornerShape(8.dp),
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(60.dp)
+                                    .padding(top = 10.dp)
+                            ) {
+                                Text(
+                                    text = "Câu tiếp",
+                                    fontSize = 20.sp,
+                                    color = Color.Black
                                 )
                             }
                         }
                     }
                 }
-                Button(
-                    onClick = {
-                        if (selectedOption != null) {
-                            if (question.correctAnswer == selectedOption)
-                                score += 10
+                else {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(vertical = 16.dp, horizontal = 16.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        if (score > 60) {
+                            Text(
+                                text = "Chúc mừng!",
+                                fontSize = 30.sp,
+                                fontWeight = FontWeight.Bold,
+                                modifier = Modifier.padding(top = 100.dp)
+                            )
+                        } else {
+                            Text(
+                                text = "Kết quả",
+                                fontSize = 30.sp,
+                                fontWeight = FontWeight.Bold,
+                                modifier = Modifier.padding(top = 100.dp)
+                            )
                         }
-                        if (currentQuestionNumber < 10) {
-                            progress += 1.0f
-                            currentQuestionNumber += 1
-                            selectedOption = null
-                            currentQuestion = questions.getOrNull(currentQuestionNumber - 1)
+                        Card(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(520.dp)
+                                .padding(top = 50.dp)
+                                .background(Color.White),
+                            shape = RoundedCornerShape(10.dp),
+                        ) {
+                            Text(
+                                text = "Bạn được $score điểm",
+                                fontSize = 30.sp,
+                                fontWeight = FontWeight.Bold,
+                                modifier = Modifier
+                                    .padding(
+                                        top = 200.dp,
+                                        bottom = 200.dp,
+                                        start = 60.dp,
+                                        end = 60.dp
+                                    )
+                                    .wrapContentSize()
+                            )
                         }
-                        else
-                            quizFinished = true
-                    },
-                    shape = RoundedCornerShape(8.dp),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(60.dp)
-                        .padding(top = 10.dp)
-                ) {
-                    Text(
-                        text = "Câu tiếp",
-                        fontSize = 20.sp,
-                        color = Color.Black
-                    )
+                    }
                 }
             }
-        }
-    }
-    else {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(vertical = 16.dp, horizontal = 16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            if (score > 60) {
-                Text(
-                    text = "Chúc mừng!",
-                    fontSize = 30.sp,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(top = 100.dp)
-                )
-            } else {
-                Text(
-                    text = "Kết quả",
-                    fontSize = 30.sp,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(top = 100.dp)
-                )
-            }
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(520.dp)
-                    .padding(top = 50.dp)
-                    .background(Color.White),
-                shape = RoundedCornerShape(10.dp),
-            ) {
-                Text(
-                    text = "Bạn được $score điểm",
-                    fontSize = 30.sp,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier
-                        .padding(top = 200.dp, bottom = 200.dp, start = 60.dp, end = 60.dp)
-                        .wrapContentSize()
-                )
-            }
-        }
-    }
+        },
+
+    )
+
+
 }
