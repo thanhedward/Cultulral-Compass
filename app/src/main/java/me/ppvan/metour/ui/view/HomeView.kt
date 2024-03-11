@@ -30,8 +30,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.navigation.NavHostController
 import me.ppvan.metour.ui.page.HomePage
 import me.ppvan.metour.ui.page.LibraryPage
+import me.ppvan.metour.ui.page.MiniGamePage
 import me.ppvan.metour.ui.page.ProfilePage
 import me.ppvan.metour.ui.page.TourPage
 import me.ppvan.metour.viewmodel.HomeViewModel
@@ -43,6 +45,7 @@ import me.ppvan.moon.utils.SlideTransition
 
 @Composable
 fun HomeView(
+    navController: NavHostController,
     homeViewModel: HomeViewModel,
     tourViewModel: TourViewModel,
     libraryViewModel: LibraryViewModel,
@@ -89,14 +92,7 @@ fun HomeView(
                 TourPages.Tour -> TourPage(tourViewModel, navigateToDetails)
                 TourPages.Profile -> ProfilePage(profileViewModel)
                 TourPages.Library -> LibraryPage(libraryViewModel, navigateToDetails)
-                TourPages.MiniGame ->  HomePage(
-                    homeViewModel,
-                    profileViewModel.loggedInUser.value,
-                    navigateToDetails
-                )
-                else -> {
-                    Text(text = "UnImplemented")
-                }
+                TourPages.MiniGame -> MiniGamePage(navController)
             }
 
         }

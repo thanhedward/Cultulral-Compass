@@ -17,6 +17,7 @@ import androidx.navigation.compose.rememberNavController
 import me.ppvan.metour.ui.theme.MeTourTheme
 import me.ppvan.metour.ui.view.HomeView
 import me.ppvan.metour.ui.view.LoginView
+import me.ppvan.metour.ui.view.QuizGame.QuizGameView
 import me.ppvan.metour.ui.view.RegisterView
 import me.ppvan.metour.ui.view.TourDetailsView
 import me.ppvan.metour.viewmodel.HomeViewModel
@@ -70,10 +71,10 @@ fun MeTourApp() {
         ProfileViewModel(MeTourApplication.appModule.authService)
     })
 
-    NavHost(navController = navigator, startDestination = Routes.Register.name) {
+    NavHost(navController = navigator, startDestination = Routes.Home.name) {
         composable(route = Routes.Home.name) {
             HomeView(
-                homeViewModel, tourViewModel, libraryViewModel, profileViewModel,
+                navigator, homeViewModel, tourViewModel, libraryViewModel, profileViewModel,
                 navigateToDetails = { id -> navigator.navigate("${Routes.Tour.name}/${id}") })
         }
         composable(
@@ -114,12 +115,16 @@ fun MeTourApp() {
             }
         }
 
+        composable(route = Routes.QuizGame.name) {
+            QuizGameView(navigator)
+        }
+
     }
 
 }
 
 enum class Routes {
-    Home, Tour, Register, Login
+    Home, Tour, Register, Login, QuizGame
 }
 
 @Preview(showBackground = true)
