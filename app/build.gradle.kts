@@ -5,11 +5,11 @@ plugins {
 }
 
 android {
-    namespace = "me.ppvan.metour"
+    namespace = "me.ppvan.meplace"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "me.ppvan.metour"
+        applicationId = "me.ppvan.meplace"
         minSdk = 30
         targetSdk = 34
         versionCode = 1

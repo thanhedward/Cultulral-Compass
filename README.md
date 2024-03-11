@@ -1,8 +1,8 @@
-# TourismMobileApp
+# DestinationMobileApp
 
 ## Tổng quan
 
-TourismMobileApp là một ứng dụng giúp người dùng đặt các tour du lịch ở Việt Nam. Ứng dụng giúp việc đi du lịch trở nên tiện lợi và nhanh chóng hơn.
+DestinationMobileApp là một ứng dụng giúp người dùng đặt các place du lịch ở Việt Nam. Ứng dụng giúp việc đi du lịch trở nên tiện lợi và nhanh chóng hơn.
 
 ## Chức năng
 
@@ -10,7 +10,7 @@ TourismMobileApp là một ứng dụng giúp người dùng đặt các tour du
 
 - **Đề xuất di sản:** Người dùng có thể xem một danh sách các di sản du lịch và thông tin chi tiết về chúng.
 
-- **Search Functionality:** Ứng dụng cung cấp một thanh tìm kiếm mạnh mẽ giúp người dùng có thể tìm tour du lịch theo ý muốn.
+- **Search Functionality:** Ứng dụng cung cấp một thanh tìm kiếm mạnh mẽ giúp người dùng có thể tìm place du lịch theo ý muốn.
 
 ### 2. Trip Planning
 
@@ -36,9 +36,9 @@ TourismMobileApp là một ứng dụng giúp người dùng đặt các tour du
 
 ## Hướng dẫn cài đặt
 
-Follow these steps to get the TourismMobileApp up and running on your local machine:
+Follow these steps to get the DestinationMobileApp up and running on your local machine:
 
-1. Clone the repository: `git clone https://github.com/your-username/TourismMobileApp.git`
+1. Clone the repository: `git clone https://github.com/your-username/DestinationMobileApp.git`
 2. Mở project bằng Android Studio.
 3. Build và chạy trên thiết bị ảo hoặc thực.
 
