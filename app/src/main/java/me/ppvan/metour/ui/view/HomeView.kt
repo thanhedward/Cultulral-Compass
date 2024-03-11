@@ -12,10 +12,12 @@ import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Place
+import androidx.compose.material.icons.filled.VideogameAsset
 import androidx.compose.material.icons.outlined.BookmarkBorder
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.Place
+import androidx.compose.material.icons.outlined.VideogameAsset
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -87,7 +89,11 @@ fun HomeView(
                 TourPages.Tour -> TourPage(tourViewModel, navigateToDetails)
                 TourPages.Profile -> ProfilePage(profileViewModel)
                 TourPages.Library -> LibraryPage(libraryViewModel, navigateToDetails)
-
+                TourPages.MiniGame ->  HomePage(
+                    homeViewModel,
+                    profileViewModel.loggedInUser.value,
+                    navigateToDetails
+                )
                 else -> {
                     Text(text = "UnImplemented")
                 }
@@ -129,5 +135,7 @@ enum class TourPages constructor(
     Home(icon = { Icons.Outlined.Home }, selectedIcon = { Icons.Filled.Home }),
     Tour(icon = { Icons.Outlined.Place }, selectedIcon = { Icons.Filled.Place }),
     Library(icon = { Icons.Outlined.BookmarkBorder }, selectedIcon = { Icons.Filled.Bookmark }),
+    MiniGame(icon = {Icons.Outlined.VideogameAsset}, selectedIcon = {Icons.Filled.VideogameAsset}),
     Profile(icon = { Icons.Outlined.Person }, selectedIcon = { Icons.Filled.Person })
+
 }
