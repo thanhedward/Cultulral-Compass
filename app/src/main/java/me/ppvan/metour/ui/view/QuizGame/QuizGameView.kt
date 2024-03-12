@@ -11,11 +11,14 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.windowInsetsBottomHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -92,19 +95,68 @@ fun QuizGameView(
                     }
                 },
                 title = {
+                    if(quizFinished) {
+                        Text(
+                            "Kết quả",
+                            maxLines = 2,
+                            overflow = TextOverflow.Ellipsis,
+                            color = Color.White
+                        )
+                    } else {
+                        Text(
+                            "$currentQuestionNumber/10",
+                            maxLines = 2,
+                            overflow = TextOverflow.Ellipsis,
+                            color = Color.White
+                        )
+                    }
 
-                    Text(
-                        "$currentQuestionNumber/10",
-                        maxLines = 2,
-                        overflow = TextOverflow.Ellipsis,
-                        color = Color.White
-                    )
 
                 },
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
                     containerColor = Color.Transparent
                 ),
             )
+        },
+        bottomBar = {
+            if(!quizFinished){
+                Column {
+                    Button(
+                        onClick = {
+                            remainingSeconds = 1500f
+                            if (selectedOption != null) {
+                                if (currentQuestion?.correctAnswer == selectedOption)
+                                    score += 10
+                            }
+                            if (currentQuestionNumber < 10) {
+                                progress += 1.0f
+                                currentQuestionNumber += 1
+                                selectedOption = null
+                                currentQuestion = questions.getOrNull(currentQuestionNumber - 1)
+                            }
+                            else
+                                quizFinished = true
+                        },
+                        shape = RoundedCornerShape(20.dp),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(160.dp)
+                            .padding(bottom = 100.dp, start = 80.dp, end = 80.dp)
+                    ) {
+                        Text(
+                            text = "Tiếp theo",
+                            fontSize = 20.sp,
+                            color = Color.White,
+                        )
+                    }
+                    Spacer(
+                        Modifier.windowInsetsBottomHeight(
+                            WindowInsets.systemBars
+                        )
+                    )
+                }
+            }
+
         },
         content = { contentPadding ->
             Box(
@@ -215,35 +267,6 @@ fun QuizGameView(
                                     }
                                 }
                             }
-
-                            Button(
-                                onClick = {
-                                    remainingSeconds = 1500f
-                                    if (selectedOption != null) {
-                                        if (question.correctAnswer == selectedOption)
-                                            score += 10
-                                    }
-                                    if (currentQuestionNumber < 10) {
-                                        progress += 1.0f
-                                        currentQuestionNumber += 1
-                                        selectedOption = null
-                                        currentQuestion = questions.getOrNull(currentQuestionNumber - 1)
-                                    }
-                                    else
-                                        quizFinished = true
-                                },
-                                shape = RoundedCornerShape(8.dp),
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .height(60.dp)
-                                    .padding(top = 10.dp)
-                            ) {
-                                Text(
-                                    text = "Câu tiếp",
-                                    fontSize = 20.sp,
-                                    color = Color.Black
-                                )
-                            }
                         }
                     }
                 }
@@ -254,21 +277,6 @@ fun QuizGameView(
                             .padding(vertical = 16.dp, horizontal = 16.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        if (score > 60) {
-                            Text(
-                                text = "Chúc mừng!",
-                                fontSize = 30.sp,
-                                fontWeight = FontWeight.Bold,
-                                modifier = Modifier.padding(top = 100.dp)
-                            )
-                        } else {
-                            Text(
-                                text = "Kết quả",
-                                fontSize = 30.sp,
-                                fontWeight = FontWeight.Bold,
-                                modifier = Modifier.padding(top = 100.dp)
-                            )
-                        }
                         Card(
                             modifier = Modifier
                                 .fillMaxWidth()
