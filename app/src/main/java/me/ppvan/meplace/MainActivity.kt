@@ -17,6 +17,7 @@ import androidx.navigation.compose.rememberNavController
 import me.ppvan.meplace.ui.theme.MePlaceTheme
 import me.ppvan.meplace.ui.view.HomeView
 import me.ppvan.meplace.ui.view.LoginView
+import me.ppvan.meplace.ui.view.QuizGame.QuizGameView
 import me.ppvan.meplace.ui.view.RegisterView
 import me.ppvan.meplace.ui.view.PlaceDetailsView
 import me.ppvan.meplace.viewmodel.HomeViewModel
@@ -70,10 +71,10 @@ fun MePlaceApp() {
         ProfileViewModel(MePlaceApplication.appModule.authService)
     })
 
-    NavHost(navController = navigator, startDestination = Routes.Register.name) {
+    NavHost(navController = navigator, startDestination = Routes.Home.name) {
         composable(route = Routes.Home.name) {
             HomeView(
-                homeViewModel, placeViewModel, libraryViewModel, profileViewModel,
+                navigator, homeViewModel, placeViewModel, libraryViewModel, profileViewModel,
                 navigateToDetails = { id -> navigator.navigate("${Routes.Place.name}/${id}") })
         }
         composable(
@@ -114,12 +115,16 @@ fun MePlaceApp() {
             }
         }
 
+        composable(route = Routes.QuizGame.name) {
+            QuizGameView(navigator)
+        }
+
     }
 
 }
 
 enum class Routes {
-    Home, Place, Register, Login
+    Home, Place, Register, Login, QuizGame
 }
 
 @Preview(showBackground = true)
