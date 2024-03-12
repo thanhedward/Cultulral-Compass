@@ -1,6 +1,8 @@
 package me.ppvan.metour.ui.view.QuizGame
 
+
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -28,13 +30,12 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
@@ -47,18 +48,15 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import me.ppvan.metour.ui.component.TopAppBarMinimalTitle
-import me.ppvan.metour.ui.theme.PinkColor
+import kotlinx.coroutines.delay
 import me.ppvan.metour.ui.theme.quiz_choice
 import me.ppvan.metour.ui.theme.selected_choice
 import me.ppvan.metour.ui.theme.theme_quiz
-import me.ppvan.moon.utils.SlideTransition
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -72,7 +70,15 @@ fun QuizGameView(
     val questions = QuestionDataBase.createQuestions()
     var currentQuestion by remember { mutableStateOf(questions.firstOrNull()) }
     var quizFinished by remember { mutableStateOf(false) }
-    val brush = Brush.linearGradient(listOf(Color(0xFF2980B9), Color.Blue.copy(0.8f)))
+    var isRunning by remember { mutableStateOf(true) }
+    var remainingSeconds by remember { mutableFloatStateOf(1500.0f) }
+    LaunchedEffect(isRunning) {
+        while (isRunning && remainingSeconds > 0) {
+            delay(100)
+            remainingSeconds-=10f
+        }
+        isRunning = false
+    }
 
     Scaffold(
         containerColor = theme_quiz,
@@ -116,18 +122,20 @@ fun QuizGameView(
                         Spacer(modifier = Modifier.height(20.dp))
                         currentQuestion?.let { question ->
                             LinearProgressIndicator(
-                                progress = { progress / 10 },
+                                progress = {  remainingSeconds / 1500 },
                                 modifier = Modifier
-                                    .height(28.dp)
-                                    .fillMaxWidth(),
+                                    .height(10.dp)
+                                    .fillMaxWidth()
+                                    .clip(RoundedCornerShape(10.dp)),
                                 color = Color.Green,
-                                strokeCap = StrokeCap.Round
+
                             )
                             Card(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .height(140.dp)
-                                    .padding(top = 40.dp),
+                                    .padding(top = 40.dp)
+                                    ,
                                 colors = CardColors(Color.Transparent,Color.Black,Color.Transparent,Color.Black),
                                 shape = RectangleShape
                             ) {
@@ -147,6 +155,23 @@ fun QuizGameView(
 
                                 ){
                                 question.options.forEach { option ->
+                                    if(!isRunning) {
+                                        remainingSeconds = 1500f
+                                        if (selectedOption != null) {
+                                            if (question.correctAnswer == selectedOption)
+                                                score += 10
+                                        }
+                                        if (currentQuestionNumber < 10) {
+                                            progress += 1.0f
+                                            currentQuestionNumber += 1
+                                            selectedOption = null
+                                            currentQuestion = questions.getOrNull(currentQuestionNumber - 1)
+                                        }
+                                        else {
+                                            quizFinished = true
+                                        }
+                                        isRunning = true
+                                    }
                                     Row (
                                         modifier = Modifier
                                             .fillMaxWidth()
@@ -158,9 +183,9 @@ fun QuizGameView(
 
                                             }
                                             .background(
-                                                if(selectedOption == option){
+                                                if (selectedOption == option) {
                                                     selected_choice
-                                                } else{
+                                                } else {
                                                     quiz_choice
                                                 }
 
@@ -171,7 +196,8 @@ fun QuizGameView(
                                         RadioButton(
                                             selected = selectedOption == option,
                                             onClick = { selectedOption = option },
-                                            modifier = Modifier.clickable { selectedOption = option }
+                                            modifier = Modifier
+                                                .clickable { selectedOption = option }
                                                 .align(Alignment.CenterVertically)
                                         )
                                         Text(
@@ -192,6 +218,7 @@ fun QuizGameView(
 
                             Button(
                                 onClick = {
+                                    remainingSeconds = 1500f
                                     if (selectedOption != null) {
                                         if (question.correctAnswer == selectedOption)
                                             score += 10
