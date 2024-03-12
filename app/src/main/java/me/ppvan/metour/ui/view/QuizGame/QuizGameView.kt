@@ -43,6 +43,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.StrokeCap
@@ -52,6 +54,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import me.ppvan.metour.ui.component.TopAppBarMinimalTitle
+import me.ppvan.metour.ui.theme.PinkColor
+import me.ppvan.metour.ui.theme.quiz_choice
+import me.ppvan.metour.ui.theme.selected_choice
+import me.ppvan.metour.ui.theme.theme_quiz
 import me.ppvan.moon.utils.SlideTransition
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -66,25 +72,27 @@ fun QuizGameView(
     val questions = QuestionDataBase.createQuestions()
     var currentQuestion by remember { mutableStateOf(questions.firstOrNull()) }
     var quizFinished by remember { mutableStateOf(false) }
+    val brush = Brush.linearGradient(listOf(Color(0xFF2980B9), Color.Blue.copy(0.8f)))
 
     Scaffold(
-        modifier = Modifier.fillMaxSize(),
+        containerColor = theme_quiz,
         topBar = {
             CenterAlignedTopAppBar(
                 navigationIcon = {
                     IconButton(
                         onClick = {navController.popBackStack()  }
                     ) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, null)
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, null, tint = Color.White)
                     }
                 },
                 title = {
 
-                        Text(
-                            "Câu $currentQuestionNumber",
-                            maxLines = 2,
-                            overflow = TextOverflow.Ellipsis,
-                        )
+                    Text(
+                        "$currentQuestionNumber/10",
+                        maxLines = 2,
+                        overflow = TextOverflow.Ellipsis,
+                        color = Color.White
+                    )
 
                 },
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
@@ -96,7 +104,7 @@ fun QuizGameView(
             Box(
                 modifier = Modifier
                     .padding(contentPadding)
-                    .fillMaxSize()
+
             ) {
                 if (!quizFinished) {
                     Column(
@@ -110,7 +118,7 @@ fun QuizGameView(
                             LinearProgressIndicator(
                                 progress = { progress / 10 },
                                 modifier = Modifier
-                                    .height(30.dp)
+                                    .height(28.dp)
                                     .fillMaxWidth(),
                                 color = Color.Green,
                                 strokeCap = StrokeCap.Round
@@ -120,51 +128,68 @@ fun QuizGameView(
                                     .fillMaxWidth()
                                     .height(140.dp)
                                     .padding(top = 40.dp),
-                                colors = CardColors(Color.White,Color.Black,Color.White,Color.Black),
+                                colors = CardColors(Color.Transparent,Color.Black,Color.Transparent,Color.Black),
                                 shape = RectangleShape
                             ) {
                                 Text(
+                                    color = Color.White,
                                     text = question.question,
-                                    fontSize = 20.sp,
+                                    fontSize = 18.sp,
+                                    fontWeight = FontWeight.Bold,
                                     modifier = Modifier
                                         .padding(top = 20.dp)
                                 )
                             }
-                            Card(
+                            Column (
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .height(380.dp)
-                                    .padding(top = 30.dp)
-                                    .background(Color.White),
-                                shape = RoundedCornerShape(10.dp),
-                            ) {
-                                Column (){
-                                    question.options.forEach { option ->
-                                        Row (
+                                    .padding(top = 10.dp),
+
+                                ){
+                                question.options.forEach { option ->
+                                    Row (
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .height(80.dp)
+                                            .padding(top = 10.dp)
+                                            .clip(RoundedCornerShape(18.dp))
+                                            .clickable {
+                                                selectedOption = option
+
+                                            }
+                                            .background(
+                                                if(selectedOption == option){
+                                                    selected_choice
+                                                } else{
+                                                    quiz_choice
+                                                }
+
+                                            )
+
+
+                                    ){
+                                        RadioButton(
+                                            selected = selectedOption == option,
+                                            onClick = { selectedOption = option },
+                                            modifier = Modifier.clickable { selectedOption = option }
+                                                .align(Alignment.CenterVertically)
+                                        )
+                                        Text(
+                                            color = if(selectedOption == option){
+                                                Color.White
+                                            } else{
+                                                Color.Black
+                                            },
+                                            text = "$option",
+                                            fontSize = 20.sp,
+                                            fontWeight = FontWeight.Bold,
                                             modifier = Modifier
-                                                .fillMaxWidth()
-                                                .padding(top = 30.dp, start = 16.dp, end = 16.dp)
-                                                .background(
-                                                    Color.LightGray,
-                                                    RoundedCornerShape(10.dp)
-                                                )
-                                        ){
-                                            RadioButton(
-                                                selected = selectedOption == option,
-                                                onClick = { selectedOption = option },
-                                                modifier = Modifier.clickable { selectedOption = option }
-                                            )
-                                            Text(
-                                                text = "$option",
-                                                fontSize = 20.sp,
-                                                fontWeight = FontWeight.Bold,
-                                                modifier = Modifier
-                                                    .align(Alignment.CenterVertically)
-                                            )
-                                        }
+                                                .align(Alignment.CenterVertically)
+                                        )
                                     }
                                 }
                             }
+
                             Button(
                                 onClick = {
                                     if (selectedOption != null) {
@@ -243,8 +268,7 @@ fun QuizGameView(
                 }
             }
         },
-
-    )
+        )
 
 
 }

@@ -46,7 +46,6 @@ fun MiniGamePage(
         }
     ) { paddingValues ->
         Column(modifier = Modifier.padding(paddingValues)) {
-            // Danh sách trò chơi
             LazyColumn(
                 modifier = Modifier.fillMaxWidth(),
                 contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
@@ -68,7 +67,7 @@ fun RoundedGameItem(name: String, onClick: () -> Unit) {
             .fillMaxWidth()
             .padding(vertical = 5.dp)
             .clickable(onClick = onClick),
-        shape = RoundedCornerShape(16.dp),
+        shape = RoundedCornerShape(25.dp),
         elevation = CardDefaults.cardElevation(8.dp)
     ) {
         val brush = Brush.linearGradient(listOf(Color(0xFF2980B9), Color.Blue.copy(0.8f)))
