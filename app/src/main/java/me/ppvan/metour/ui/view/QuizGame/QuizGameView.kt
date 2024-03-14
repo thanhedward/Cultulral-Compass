@@ -1,9 +1,11 @@
 package me.ppvan.metour.ui.view.QuizGame
 
 
-import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.animation.togetherWith
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -12,19 +14,21 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.windowInsetsBottomHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicText
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.outlined.ArrowBack
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardColors
@@ -51,30 +55,138 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import kotlinx.coroutines.delay
+import me.ppvan.metour.R
+import me.ppvan.metour.data.User
 import me.ppvan.metour.ui.theme.quiz_choice
 import me.ppvan.metour.ui.theme.selected_choice
 import me.ppvan.metour.ui.theme.theme_quiz
+import me.ppvan.metour.viewmodel.ProfileViewModel
 
-@OptIn(ExperimentalMaterial3Api::class)
+
 @Composable
 fun QuizGameView(
-    navController: NavHostController
+    navController: NavHostController,
+    profileViewModel: ProfileViewModel,
+) {
+    var showSplashScreen by remember { mutableStateOf(true) }
+    val updateSplashScreen: (Boolean) -> Unit = { showSplashScreen = it }
+
+    LaunchedEffect(showSplashScreen) {
+        delay(4500)
+        showSplashScreen = false
+    }
+
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        QuizGame(navController = navController, profileViewModel = profileViewModel, isShowSplashScreen = showSplashScreen, updateSplashScreen)
+
+        if (showSplashScreen) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.Black.copy(alpha = 0.8f)),
+                contentAlignment = Alignment.Center
+            ) {
+                SplashScreen()
+            }
+        }
+    }
+}
+
+
+
+@Composable
+fun SplashScreen() {
+    var countDown by remember { mutableIntStateOf(4) }
+
+    LaunchedEffect(key1 = countDown) {
+        if (countDown > 0) {
+            delay(1000)
+            countDown -= 1
+        }
+    }
+
+    val fadeIn = rememberInfiniteTransition(label = "")
+
+    val fadeInAlpha by fadeIn.animateFloat(
+        initialValue = 0.0f,
+        targetValue = 1.0f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(durationMillis = 500),
+            repeatMode = RepeatMode.Reverse
+        ), label = ""
+    )
+
+    val startFadeIn by fadeIn.animateFloat(
+        initialValue = 0.0f,
+        targetValue = 1.0f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(durationMillis = 750),
+            repeatMode = RepeatMode.Reverse
+        ), label = ""
+    )
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        if (countDown > 1) {
+            BasicText(
+                text = (countDown - 1).toString(),
+                style = TextStyle(
+                    color = Color.White.copy(alpha = fadeInAlpha),
+                    fontSize = 48.sp,
+
+                )
+            )
+        } else {
+            BasicText(
+                text = "Bắt đầu ...",
+                style = TextStyle(
+                    color = Color.White.copy(alpha = startFadeIn),
+                    fontSize = 48.sp,
+
+                )
+            )
+        }
+    }
+}
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun QuizGame(
+    navController: NavHostController,
+    profileViewModel: ProfileViewModel,
+    isShowSplashScreen: Boolean,
+    changeIsShowSplashScreen: (Boolean) -> Unit
 ) {
     var progress by remember { mutableFloatStateOf(1.0f) }
     var currentQuestionNumber by remember { mutableIntStateOf(1) }
     var selectedOption by remember { mutableStateOf<String?>(null) }
     var score by remember { mutableIntStateOf(0) }
-    val questions = QuestionDataBase.createQuestions()
+    var questions = QuestionDataBase.createQuestions()
     var currentQuestion by remember { mutableStateOf(questions.firstOrNull()) }
     var quizFinished by remember { mutableStateOf(false) }
     var isRunning by remember { mutableStateOf(true) }
-    var remainingSeconds by remember { mutableFloatStateOf(1500.0f) }
+    var remainingSeconds by remember { mutableFloatStateOf(1950.0f) }
+    val user: User = profileViewModel.loggedInUser.value
+    val context = LocalContext.current
+
+
     LaunchedEffect(isRunning) {
         while (isRunning && remainingSeconds > 0) {
             delay(100)
@@ -122,6 +234,7 @@ fun QuizGameView(
             if(!quizFinished){
                 Column {
                     Button(
+                        enabled = !isShowSplashScreen,
                         onClick = {
                             remainingSeconds = 1500f
                             if (selectedOption != null) {
@@ -162,7 +275,6 @@ fun QuizGameView(
             Box(
                 modifier = Modifier
                     .padding(contentPadding)
-
             ) {
                 if (!quizFinished) {
                     Column(
@@ -230,9 +342,10 @@ fun QuizGameView(
                                             .height(80.dp)
                                             .padding(top = 10.dp)
                                             .clip(RoundedCornerShape(18.dp))
-                                            .clickable {
+                                            .clickable(
+                                                enabled = !isShowSplashScreen
+                                            ) {
                                                 selectedOption = option
-
                                             }
                                             .background(
                                                 if (selectedOption == option) {
@@ -246,6 +359,7 @@ fun QuizGameView(
 
                                     ){
                                         RadioButton(
+                                            enabled = !isShowSplashScreen,
                                             selected = selectedOption == option,
                                             onClick = { selectedOption = option },
                                             modifier = Modifier
@@ -274,36 +388,94 @@ fun QuizGameView(
                     Column(
                         modifier = Modifier
                             .fillMaxSize()
-                            .padding(vertical = 16.dp, horizontal = 16.dp),
+                            .padding(vertical = 30.dp, horizontal = 30.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Card(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .height(520.dp)
-                                .padding(top = 50.dp)
-                                .background(Color.White),
+                                .padding(top = 50.dp),
                             shape = RoundedCornerShape(10.dp),
                         ) {
                             Text(
-                                text = "Bạn được $score điểm",
+                                textAlign = TextAlign.Center,
+                                text = "Chúc mừng,${user.username}!",
                                 fontSize = 30.sp,
                                 fontWeight = FontWeight.Bold,
                                 modifier = Modifier
                                     .padding(
-                                        top = 200.dp,
-                                        bottom = 200.dp,
-                                        start = 60.dp,
-                                        end = 60.dp
-                                    )
+                                        top = 20.dp,
+                                        bottom = 20.dp,
+
+                                        )
                                     .wrapContentSize()
+                                    .fillMaxWidth()
+
                             )
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth(0.4f)
+                                    .aspectRatio(1f)
+                                    .align(Alignment.CenterHorizontally)
+                                    .padding(bottom = 20.dp)
+                            ){
+                                AsyncImage(
+                                    modifier = Modifier
+                                        .matchParentSize()
+                                        .clip(CircleShape),
+                                    model = ImageRequest.Builder(context)
+                                        .data(user.avatarUrl)
+                                        .error(R.drawable.default_user)
+                                        .crossfade(true)
+                                        .build(),
+                                    placeholder = painterResource(R.drawable.default_user),
+                                    contentDescription = stringResource(R.string.user_avatar),
+                                    contentScale = ContentScale.Crop,
+
+                                )
+                            }
+                            Text(
+                                textAlign = TextAlign.Center,
+                                text = "Điểm: $score/10",
+                                fontSize = 30.sp,
+                                fontWeight = FontWeight.Bold,
+                                modifier = Modifier
+                                    .wrapContentSize()
+                                    .fillMaxWidth()
+                            )
+
+                            Row(
+                                modifier = Modifier.fillMaxWidth()
+                                    .padding(top = 10.dp, bottom = 20.dp),
+                                horizontalArrangement = Arrangement.Center
+                            ) {
+                                Button(
+                                    onClick = {
+                                        navController.popBackStack()
+                                    },
+                                    modifier = Modifier.padding(8.dp)
+                                ) {
+                                    Icon(imageVector = Icons.Filled.Home, contentDescription = "Back Home")
+                                }
+                                Button(
+                                    onClick = {
+                                        changeIsShowSplashScreen(true)
+                                        remainingSeconds = 1950f
+                                        questions = QuestionDataBase.createQuestions()
+                                        quizFinished = false
+                                        currentQuestionNumber = 1
+                                        currentQuestion = questions.getOrNull(currentQuestionNumber - 1)
+                                    },
+                                    modifier = Modifier.padding(8.dp)
+                                ) {
+                                    Icon(imageVector = Icons.Filled.Refresh, contentDescription = "PLay again" )
+                                }
+                            }
+
                         }
                     }
                 }
             }
         },
         )
-
-
 }

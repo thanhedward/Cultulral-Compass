@@ -466,8 +466,6 @@ fun ProfileListItem(
             modifier = Modifier
                 .height(IntrinsicSize.Max)
                 .padding(horizontal = 4.dp, vertical = 8.dp)
-
-
         ) {
             Box(
                 modifier = Modifier

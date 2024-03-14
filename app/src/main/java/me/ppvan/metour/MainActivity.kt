@@ -116,7 +116,7 @@ fun MeTourApp() {
         }
 
         composable(route = Routes.QuizGame.name) {
-            QuizGameView(navigator)
+            QuizGameView(navigator, profileViewModel)
         }
 
     }
