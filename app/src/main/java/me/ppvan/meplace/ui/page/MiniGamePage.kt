@@ -79,13 +79,25 @@ fun RoundedGameItem(name: String, onClick: () -> Unit) {
                 .padding(16.dp),
             verticalArrangement = Arrangement.Top,
         ) {
-            Text(
-                text = name,
-                fontSize = 16.sp,
-                color = Color.White,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.align(Alignment.Start)
-            )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ){
+                Text(
+                    text = name,
+                    fontSize = 16.sp,
+                    color = Color.White,
+                    fontWeight = FontWeight.Bold,
+                )
+                Text(
+                    text = "Kỉ lục: 0/100",
+                    fontSize = 16.sp,
+                    color = Color.White,
+                    fontWeight = FontWeight.Bold,
+                )
+
+            }
+
             Row(
                 modifier = Modifier
                     .fillMaxWidth()

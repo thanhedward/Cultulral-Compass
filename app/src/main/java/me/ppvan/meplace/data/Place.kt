@@ -1,6 +1,7 @@
 package me.ppvan.meplace.data
 
-import me.ppvan.meplace.R
+import me.ppvan.metour.R
+
 
 data class Destination(
     val id: Int,

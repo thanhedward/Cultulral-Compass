@@ -133,5 +133,4 @@ enum class PlacePages constructor(
     Library(icon = { Icons.Outlined.BookmarkBorder }, selectedIcon = { Icons.Filled.Bookmark }),
     MiniGame(icon = {Icons.Outlined.VideogameAsset}, selectedIcon = {Icons.Filled.VideogameAsset}),
     Profile(icon = { Icons.Outlined.Person }, selectedIcon = { Icons.Filled.Person })
-
 }

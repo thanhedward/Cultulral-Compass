@@ -71,11 +71,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
-import me.ppvan.meplace.R
 import me.ppvan.meplace.data.FakeDestinationDataSource
 import me.ppvan.meplace.data.User
 import me.ppvan.meplace.ui.component.rememberImeState
 import me.ppvan.meplace.viewmodel.ProfileViewModel
+import me.ppvan.metour.R
 import me.ppvan.moon.utils.ScaleTransition
 
 
@@ -466,8 +466,6 @@ fun ProfileListItem(
             modifier = Modifier
                 .height(IntrinsicSize.Max)
                 .padding(horizontal = 4.dp, vertical = 8.dp)
-
-
         ) {
             Box(
                 modifier = Modifier
