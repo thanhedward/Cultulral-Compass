@@ -32,7 +32,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
-import me.ppvan.meplace.R
 import me.ppvan.meplace.data.Destination
 import me.ppvan.meplace.data.User
 import me.ppvan.meplace.ui.component.PopularPlaceCard
@@ -41,6 +40,7 @@ import me.ppvan.meplace.ui.theme.MePlaceTheme
 import me.ppvan.meplace.ui.utils.noRippleClickable
 import me.ppvan.meplace.viewmodel.HomeStates
 import me.ppvan.meplace.viewmodel.HomeViewModel
+import me.ppvan.metour.R
 
 @Composable
 fun HomePage(viewModel: HomeViewModel, user: User, navigateToDetail: (Int) -> Unit) {
