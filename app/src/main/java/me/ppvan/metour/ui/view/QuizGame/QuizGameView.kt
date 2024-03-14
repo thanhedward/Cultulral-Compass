@@ -20,6 +20,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsBottomHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.CircleShape
@@ -70,7 +71,9 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import kotlinx.coroutines.delay
 import me.ppvan.metour.R
+import me.ppvan.metour.data.GameScore
 import me.ppvan.metour.data.User
+import me.ppvan.metour.repository.AppMiniGameService
 import me.ppvan.metour.ui.theme.quiz_choice
 import me.ppvan.metour.ui.theme.selected_choice
 import me.ppvan.metour.ui.theme.theme_quiz
@@ -150,16 +153,17 @@ fun SplashScreen() {
                 text = (countDown - 1).toString(),
                 style = TextStyle(
                     color = Color.White.copy(alpha = fadeInAlpha),
-                    fontSize = 48.sp,
-
+                    fontSize = 72.sp,
+                    fontWeight = FontWeight.Bold
                 )
             )
         } else {
             BasicText(
-                text = "Bắt đầu ...",
+                text = "Bắt đầu...",
                 style = TextStyle(
                     color = Color.White.copy(alpha = startFadeIn),
-                    fontSize = 48.sp,
+                    fontSize = 72.sp,
+                    fontWeight = FontWeight.Bold
 
                 )
             )
@@ -187,6 +191,7 @@ fun QuizGame(
     val context = LocalContext.current
 
 
+
     LaunchedEffect(isRunning) {
         while (isRunning && remainingSeconds > 0) {
             delay(100)
@@ -201,7 +206,8 @@ fun QuizGame(
             CenterAlignedTopAppBar(
                 navigationIcon = {
                     IconButton(
-                        onClick = {navController.popBackStack()  }
+                        enabled = !isShowSplashScreen,
+                        onClick = {navController.popBackStack()}
                     ) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, null, tint = Color.White)
                     }
@@ -389,12 +395,13 @@ fun QuizGame(
                         modifier = Modifier
                             .fillMaxSize()
                             .padding(vertical = 30.dp, horizontal = 30.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally
+                        horizontalAlignment = Alignment.CenterHorizontally,
+
                     ) {
                         Card(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(top = 50.dp),
+                                .padding(top = 100.dp),
                             shape = RoundedCornerShape(10.dp),
                         ) {
                             Text(
@@ -436,7 +443,7 @@ fun QuizGame(
                             }
                             Text(
                                 textAlign = TextAlign.Center,
-                                text = "Điểm: $score/10",
+                                text = "Điểm: $score/100",
                                 fontSize = 30.sp,
                                 fontWeight = FontWeight.Bold,
                                 modifier = Modifier
@@ -445,7 +452,8 @@ fun QuizGame(
                             )
 
                             Row(
-                                modifier = Modifier.fillMaxWidth()
+                                modifier = Modifier
+                                    .fillMaxWidth()
                                     .padding(top = 10.dp, bottom = 20.dp),
                                 horizontalArrangement = Arrangement.Center
                             ) {
@@ -453,10 +461,16 @@ fun QuizGame(
                                     onClick = {
                                         navController.popBackStack()
                                     },
-                                    modifier = Modifier.padding(8.dp)
+                                    modifier = Modifier.padding(10.dp)
                                 ) {
-                                    Icon(imageVector = Icons.Filled.Home, contentDescription = "Back Home")
+                                    Icon(
+                                        modifier = Modifier.padding(3.dp),
+                                        imageVector = Icons.Filled.Home,
+                                        contentDescription = "Back Home"
+
+                                    )
                                 }
+                                Spacer(modifier = Modifier.width(10.dp))
                                 Button(
                                     onClick = {
                                         changeIsShowSplashScreen(true)
@@ -466,9 +480,12 @@ fun QuizGame(
                                         currentQuestionNumber = 1
                                         currentQuestion = questions.getOrNull(currentQuestionNumber - 1)
                                     },
-                                    modifier = Modifier.padding(8.dp)
+                                    modifier = Modifier.padding(10.dp)
                                 ) {
-                                    Icon(imageVector = Icons.Filled.Refresh, contentDescription = "PLay again" )
+                                    Icon(
+                                        modifier = Modifier.padding(3.dp),
+                                        imageVector = Icons.Filled.Refresh,
+                                        contentDescription = "PLay again" )
                                 }
                             }
 
