@@ -53,7 +53,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
@@ -74,10 +73,7 @@ import me.ppvan.meplace.ui.theme.quiz_choice
 import me.ppvan.meplace.ui.theme.selected_choice
 import me.ppvan.meplace.ui.theme.theme_quiz
 import me.ppvan.meplace.R
-import me.ppvan.meplace.data.GameScore
 import me.ppvan.meplace.data.User
-import me.ppvan.meplace.ui.view.QuizGame.QuestionDataBase
-import me.ppvan.meplace.repository.AppMiniGameService
 import me.ppvan.meplace.viewmodel.ProfileViewModel
 
 
