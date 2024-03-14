@@ -1,7 +1,7 @@
-package me.ppvan.metour.repository
+package me.ppvan.meplace.repository
 
-import me.ppvan.metour.data.GameScore
-import me.ppvan.metour.data.User
+import me.ppvan.meplace.data.GameScore
+import me.ppvan.meplace.data.User
 
 interface GameService {
     fun getHighestScore(gameName: String): GameScore?

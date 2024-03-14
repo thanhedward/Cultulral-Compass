@@ -1,4 +1,4 @@
-package me.ppvan.metour.ui.view.QuizGame
+package me.ppvan.meplace.ui.view.QuizGame
 
 
 import androidx.compose.animation.core.RepeatMode
@@ -73,11 +73,11 @@ import kotlinx.coroutines.delay
 import me.ppvan.meplace.ui.theme.quiz_choice
 import me.ppvan.meplace.ui.theme.selected_choice
 import me.ppvan.meplace.ui.theme.theme_quiz
-import me.ppvan.metour.R
-import me.ppvan.metour.data.GameScore
+import me.ppvan.meplace.R
+import me.ppvan.meplace.data.GameScore
 import me.ppvan.meplace.data.User
 import me.ppvan.meplace.ui.view.QuizGame.QuestionDataBase
-import me.ppvan.metour.repository.AppMiniGameService
+import me.ppvan.meplace.repository.AppMiniGameService
 import me.ppvan.meplace.viewmodel.ProfileViewModel
 
 

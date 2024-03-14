@@ -75,7 +75,7 @@ import me.ppvan.meplace.data.FakeDestinationDataSource
 import me.ppvan.meplace.data.User
 import me.ppvan.meplace.ui.component.rememberImeState
 import me.ppvan.meplace.viewmodel.ProfileViewModel
-import me.ppvan.metour.R
+import me.ppvan.meplace.R
 import me.ppvan.moon.utils.ScaleTransition
 
 

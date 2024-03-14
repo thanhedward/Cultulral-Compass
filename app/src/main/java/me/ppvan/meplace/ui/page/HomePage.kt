@@ -40,7 +40,7 @@ import me.ppvan.meplace.ui.theme.MePlaceTheme
 import me.ppvan.meplace.ui.utils.noRippleClickable
 import me.ppvan.meplace.viewmodel.HomeStates
 import me.ppvan.meplace.viewmodel.HomeViewModel
-import me.ppvan.metour.R
+import me.ppvan.meplace.R
 
 @Composable
 fun HomePage(viewModel: HomeViewModel, user: User, navigateToDetail: (Int) -> Unit) {
