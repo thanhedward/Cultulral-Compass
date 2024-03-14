@@ -1,4 +1,4 @@
-package me.ppvan.metour.ui.view.QuizGame
+package me.ppvan.meplace.ui.view.QuizGame
 
 data class Question(
     val question: String,

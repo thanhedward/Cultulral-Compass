@@ -70,14 +70,14 @@ import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import kotlinx.coroutines.delay
+import me.ppvan.meplace.ui.theme.quiz_choice
+import me.ppvan.meplace.ui.theme.selected_choice
+import me.ppvan.meplace.ui.theme.theme_quiz
 import me.ppvan.metour.R
 import me.ppvan.metour.data.GameScore
-import me.ppvan.metour.data.User
+import me.ppvan.meplace.data.User
 import me.ppvan.metour.repository.AppMiniGameService
-import me.ppvan.metour.ui.theme.quiz_choice
-import me.ppvan.metour.ui.theme.selected_choice
-import me.ppvan.metour.ui.theme.theme_quiz
-import me.ppvan.metour.viewmodel.ProfileViewModel
+import me.ppvan.meplace.viewmodel.ProfileViewModel
 
 
 @Composable
