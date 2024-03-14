@@ -1,6 +1,6 @@
 package me.ppvan.meplace.data
 
-import me.ppvan.metour.R
+import me.ppvan.meplace.R
 
 
 data class Destination(

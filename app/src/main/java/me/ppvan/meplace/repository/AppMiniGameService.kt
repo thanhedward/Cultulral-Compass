@@ -1,10 +1,11 @@
-package me.ppvan.metour.repository
+package me.ppvan.meplace.repository
 
-import me.ppvan.metour.dao.ScoreDao
-import me.ppvan.metour.dao.UserDao
-import me.ppvan.metour.data.GameScore
+import me.ppvan.meplace.dao.ScoreDao
+import me.ppvan.meplace.dao.UserDao
+import me.ppvan.meplace.data.GameScore
+import me.ppvan.meplace.repository.GameService
 
-class AppMiniGameService (private val scoreDao: ScoreDao) : GameService  {
+class AppMiniGameService (private val scoreDao: ScoreDao) : GameService {
     override fun insert(gameScore: GameScore) {
         scoreDao.insert(gameScore)
     }

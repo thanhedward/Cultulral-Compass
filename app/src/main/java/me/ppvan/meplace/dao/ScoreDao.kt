@@ -1,10 +1,10 @@
-package me.ppvan.metour.dao
+package me.ppvan.meplace.dao
 
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import me.ppvan.metour.data.GameScore
+import me.ppvan.meplace.data.GameScore
 
 @Dao
 interface ScoreDao {

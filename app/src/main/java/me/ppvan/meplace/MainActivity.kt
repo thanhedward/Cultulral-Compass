@@ -26,7 +26,7 @@ import me.ppvan.meplace.viewmodel.ProfileViewModel
 import me.ppvan.meplace.viewmodel.RegisterViewModel
 import me.ppvan.meplace.viewmodel.PlaceViewModel
 import me.ppvan.meplace.viewmodel.viewModelFactory
-import me.ppvan.metour.ui.view.QuizGame.QuizGameView
+import me.ppvan.meplace.ui.view.QuizGame.QuizGameView
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

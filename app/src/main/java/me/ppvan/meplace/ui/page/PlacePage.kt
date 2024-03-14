@@ -43,7 +43,7 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import me.ppvan.meplace.data.Destination
 import me.ppvan.meplace.viewmodel.PlaceViewModel
-import me.ppvan.metour.R
+import me.ppvan.meplace.R
 
 @Composable
 fun PlacePage(viewModel: PlaceViewModel, navigateToDetails: (Int) -> Unit) {
