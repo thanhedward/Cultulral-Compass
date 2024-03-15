@@ -38,7 +38,8 @@ import me.ppvan.meplace.ui.theme.PinkColor
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MiniGamePage(
-    navController: NavHostController
+    navController: NavHostController,
+    score: Int
 ) {
     Scaffold(
         topBar = {
@@ -51,7 +52,8 @@ fun MiniGamePage(
                 contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
             ) {
                 item {
-                    RoundedGameItem("Đố vui"){
+                    RoundedGameItem("Đố vui", score
+                    ){
                         navController.navigate(Routes.QuizGame.name)
                     }
                 }
@@ -61,7 +63,12 @@ fun MiniGamePage(
 }
 
 @Composable
-fun RoundedGameItem(name: String, onClick: () -> Unit) {
+fun RoundedGameItem(
+    name: String,
+    score: Int,
+    onClick: () -> Unit,
+
+) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -90,7 +97,7 @@ fun RoundedGameItem(name: String, onClick: () -> Unit) {
                     fontWeight = FontWeight.Bold,
                 )
                 Text(
-                    text = "Kỉ lục: 0/100",
+                    text = "Kỉ lục: $score/100",
                     fontSize = 16.sp,
                     color = Color.White,
                     fontWeight = FontWeight.Bold,

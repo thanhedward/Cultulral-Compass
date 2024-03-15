@@ -10,8 +10,8 @@ class AppMiniGameService (private val scoreDao: ScoreDao) : GameService {
         scoreDao.insert(gameScore)
     }
 
-    override fun getHighestScore(gameName: String): GameScore {
+    override fun getHighestScore(gameName: String): Int {
         val highestScore = scoreDao.getHighestScore(gameName)
-        return highestScore ?: GameScore(id = 0, gameName = gameName, score = 0)
+        return highestScore ?: 0
     }
 }

@@ -4,7 +4,7 @@ import me.ppvan.meplace.data.GameScore
 import me.ppvan.meplace.data.User
 
 interface GameService {
-    fun getHighestScore(gameName: String): GameScore?
+    fun getHighestScore(gameName: String): Int?
 
     fun insert(gameScore: GameScore): Unit
 }

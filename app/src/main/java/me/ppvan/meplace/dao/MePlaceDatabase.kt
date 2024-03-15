@@ -7,5 +7,6 @@ import me.ppvan.meplace.data.User
 @Database(entities = [User::class], version = 3)
 abstract class MePlaceDatabase : RoomDatabase() {
     abstract fun userDao(): UserDao
+    abstract fun scoreDao(): ScoreDao
 }
 

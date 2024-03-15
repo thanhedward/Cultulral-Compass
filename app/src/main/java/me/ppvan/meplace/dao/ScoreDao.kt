@@ -8,8 +8,8 @@ import me.ppvan.meplace.data.GameScore
 
 @Dao
 interface ScoreDao {
-    @Query("SELECT * FROM game_scores WHERE game_name = :gameName ORDER BY score DESC LIMIT 1")
-    fun getHighestScore(gameName: String): GameScore?
+    @Query("SELECT score FROM game_scores WHERE gameName = :gameName ORDER BY score DESC LIMIT 1")
+    fun getHighestScore(gameName: String): Int?
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insert(gameScore: GameScore): Unit
