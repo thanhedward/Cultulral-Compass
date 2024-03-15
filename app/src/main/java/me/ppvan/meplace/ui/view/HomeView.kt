@@ -50,7 +50,7 @@ fun HomeView(
     placeViewModel: PlaceViewModel,
     libraryViewModel: LibraryViewModel,
     profileViewModel: ProfileViewModel,
-    score:Int,
+    score: Long,
     navigateToDetails: (Int) -> Unit
 ) {
 

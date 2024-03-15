@@ -39,7 +39,7 @@ import me.ppvan.meplace.ui.theme.PinkColor
 @Composable
 fun MiniGamePage(
     navController: NavHostController,
-    score: Int
+    score: Long
 ) {
     Scaffold(
         topBar = {
@@ -65,7 +65,7 @@ fun MiniGamePage(
 @Composable
 fun RoundedGameItem(
     name: String,
-    score: Int,
+    score: Long,
     onClick: () -> Unit,
 
 ) {

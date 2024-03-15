@@ -8,6 +8,7 @@ import me.ppvan.meplace.R
 @Entity(tableName = "game_scores")
 data class GameScore(
     @PrimaryKey(autoGenerate = true)
+    val id: Long = 0,
     val gameName: String,
-    val score: Int
+    val score: Long
 )
