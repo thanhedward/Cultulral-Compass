@@ -47,6 +47,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -78,6 +79,7 @@ import me.ppvan.meplace.data.GameScore
 import me.ppvan.meplace.data.User
 import me.ppvan.meplace.ui.view.QuizGame.QuestionDataBase
 import me.ppvan.meplace.repository.AppMiniGameService
+import me.ppvan.meplace.viewmodel.GameViewModel
 import me.ppvan.meplace.viewmodel.ProfileViewModel
 
 
@@ -85,6 +87,7 @@ import me.ppvan.meplace.viewmodel.ProfileViewModel
 fun QuizGameView(
     navController: NavHostController,
     profileViewModel: ProfileViewModel,
+    gameViewModel: GameViewModel
 ) {
     var showSplashScreen by remember { mutableStateOf(true) }
     val updateSplashScreen: (Boolean) -> Unit = { showSplashScreen = it }
@@ -98,7 +101,7 @@ fun QuizGameView(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
-        QuizGame(navController = navController, profileViewModel = profileViewModel, isShowSplashScreen = showSplashScreen, updateSplashScreen)
+        QuizGame(navController = navController, profileViewModel = profileViewModel, isShowSplashScreen = showSplashScreen, updateSplashScreen, gameViewModel)
 
         if (showSplashScreen) {
             Box(
@@ -177,12 +180,13 @@ fun QuizGame(
     navController: NavHostController,
     profileViewModel: ProfileViewModel,
     isShowSplashScreen: Boolean,
-    changeIsShowSplashScreen: (Boolean) -> Unit
+    changeIsShowSplashScreen: (Boolean) -> Unit,
+    gameViewModel: GameViewModel
 ) {
     var progress by remember { mutableFloatStateOf(1.0f) }
     var currentQuestionNumber by remember { mutableIntStateOf(1) }
     var selectedOption by remember { mutableStateOf<String?>(null) }
-    var score by remember { mutableIntStateOf(0) }
+    var score by remember { mutableLongStateOf(0) }
     var questions = QuestionDataBase.createQuestions()
     var currentQuestion by remember { mutableStateOf(questions.firstOrNull()) }
     var quizFinished by remember { mutableStateOf(false) }
@@ -278,222 +282,226 @@ fun QuizGame(
             }
 
         },
-        content = { contentPadding ->
-            Box(
-                modifier = Modifier
-                    .padding(contentPadding)
-            ) {
-                if (!quizFinished) {
-                    Column(
-                        modifier = Modifier
-                            .padding(vertical = 10.dp, horizontal = 16.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Center
-                    ) {
-                        Spacer(modifier = Modifier.height(20.dp))
-                        currentQuestion?.let { question ->
-                            LinearProgressIndicator(
-                                progress = {  remainingSeconds / 1500 },
-                                modifier = Modifier
-                                    .height(10.dp)
-                                    .fillMaxWidth()
-                                    .clip(RoundedCornerShape(10.dp)),
-                                color = Color.Green,
+    ) { contentPadding ->
+        Box(
+            modifier = Modifier
+                .padding(contentPadding)
+        ) {
+            if (!quizFinished) {
+                Column(
+                    modifier = Modifier
+                        .padding(vertical = 10.dp, horizontal = 16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    Spacer(modifier = Modifier.height(20.dp))
+                    currentQuestion?.let { question ->
+                        LinearProgressIndicator(
+                            progress = { remainingSeconds / 1500 },
+                            modifier = Modifier
+                                .height(10.dp)
+                                .fillMaxWidth()
+                                .clip(RoundedCornerShape(10.dp)),
+                            color = Color.Green,
 
                             )
-                            Card(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .height(140.dp)
-                                    .padding(top = 40.dp)
-                                    ,
-                                colors = CardColors(Color.Transparent,Color.Black,Color.Transparent,Color.Black),
-                                shape = RectangleShape
-                            ) {
-                                Text(
-                                    color = Color.White,
-                                    text = question.question,
-                                    fontSize = 18.sp,
-                                    fontWeight = FontWeight.Bold,
-                                    modifier = Modifier
-                                        .padding(top = 20.dp)
-                                )
-                            }
-                            Column (
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(top = 10.dp),
-
-                                ){
-                                question.options.forEach { option ->
-                                    if(!isRunning) {
-                                        remainingSeconds = 1500f
-                                        if (selectedOption != null) {
-                                            if (question.correctAnswer == selectedOption)
-                                                score += 10
-                                        }
-                                        if (currentQuestionNumber < 10) {
-                                            progress += 1.0f
-                                            currentQuestionNumber += 1
-                                            selectedOption = null
-                                            currentQuestion = questions.getOrNull(currentQuestionNumber - 1)
-                                        }
-                                        else {
-                                            quizFinished = true
-                                        }
-                                        isRunning = true
-                                    }
-                                    Row (
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .height(80.dp)
-                                            .padding(top = 10.dp)
-                                            .clip(RoundedCornerShape(18.dp))
-                                            .clickable(
-                                                enabled = !isShowSplashScreen
-                                            ) {
-                                                selectedOption = option
-                                            }
-                                            .background(
-                                                if (selectedOption == option) {
-                                                    selected_choice
-                                                } else {
-                                                    quiz_choice
-                                                }
-
-                                            )
-
-
-                                    ){
-                                        RadioButton(
-                                            enabled = !isShowSplashScreen,
-                                            selected = selectedOption == option,
-                                            onClick = { selectedOption = option },
-                                            modifier = Modifier
-                                                .clickable { selectedOption = option }
-                                                .align(Alignment.CenterVertically)
-                                        )
-                                        Text(
-                                            color = if(selectedOption == option){
-                                                Color.White
-                                            } else{
-                                                Color.Black
-                                            },
-                                            text = "$option",
-                                            fontSize = 20.sp,
-                                            fontWeight = FontWeight.Bold,
-                                            modifier = Modifier
-                                                .align(Alignment.CenterVertically)
-                                        )
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-                else {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(vertical = 30.dp, horizontal = 30.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-
-                    ) {
                         Card(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(top = 100.dp),
-                            shape = RoundedCornerShape(10.dp),
+                                .height(140.dp)
+                                .padding(top = 40.dp),
+                            colors = CardColors(
+                                Color.Transparent,
+                                Color.Black,
+                                Color.Transparent,
+                                Color.Black
+                            ),
+                            shape = RectangleShape
                         ) {
                             Text(
-                                textAlign = TextAlign.Center,
-                                text = "Chúc mừng,${user.username}!",
-                                fontSize = 30.sp,
+                                color = Color.White,
+                                text = question.question,
+                                fontSize = 18.sp,
                                 fontWeight = FontWeight.Bold,
                                 modifier = Modifier
-                                    .padding(
-                                        top = 20.dp,
-                                        bottom = 20.dp,
+                                    .padding(top = 20.dp)
+                            )
+                        }
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = 10.dp),
+
+                            ) {
+                            question.options.forEach { option ->
+                                if (!isRunning) {
+                                    remainingSeconds = 1500f
+                                    if (selectedOption != null) {
+                                        if (question.correctAnswer == selectedOption)
+                                            score += 10
+                                    }
+                                    if (currentQuestionNumber < 10) {
+                                        progress += 1.0f
+                                        currentQuestionNumber += 1
+                                        selectedOption = null
+                                        currentQuestion =
+                                            questions.getOrNull(currentQuestionNumber - 1)
+                                    } else {
+                                        quizFinished = true
+                                    }
+                                    isRunning = true
+                                }
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .height(80.dp)
+                                        .padding(top = 10.dp)
+                                        .clip(RoundedCornerShape(18.dp))
+                                        .clickable(
+                                            enabled = !isShowSplashScreen
+                                        ) {
+                                            selectedOption = option
+                                        }
+                                        .background(
+                                            if (selectedOption == option) {
+                                                selected_choice
+                                            } else {
+                                                quiz_choice
+                                            }
 
                                         )
-                                    .wrapContentSize()
-                                    .fillMaxWidth()
 
-                            )
-                            Box(
-                                modifier = Modifier
-                                    .fillMaxWidth(0.4f)
-                                    .aspectRatio(1f)
-                                    .align(Alignment.CenterHorizontally)
-                                    .padding(bottom = 20.dp)
-                            ){
-                                AsyncImage(
-                                    modifier = Modifier
-                                        .matchParentSize()
-                                        .clip(CircleShape),
-                                    model = ImageRequest.Builder(context)
-                                        .data(user.avatarUrl)
-                                        .error(R.drawable.default_user)
-                                        .crossfade(true)
-                                        .build(),
-                                    placeholder = painterResource(R.drawable.default_user),
-                                    contentDescription = stringResource(R.string.user_avatar),
-                                    contentScale = ContentScale.Crop,
 
-                                )
-                            }
-                            Text(
-                                textAlign = TextAlign.Center,
-                                text = "Điểm: $score/100",
-                                fontSize = 30.sp,
-                                fontWeight = FontWeight.Bold,
-                                modifier = Modifier
-                                    .wrapContentSize()
-                                    .fillMaxWidth()
-                            )
-
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(top = 10.dp, bottom = 20.dp),
-                                horizontalArrangement = Arrangement.Center
-                            ) {
-                                Button(
-                                    onClick = {
-                                        navController.popBackStack()
-                                    },
-                                    modifier = Modifier.padding(10.dp)
                                 ) {
-                                    Icon(
-                                        modifier = Modifier.padding(3.dp),
-                                        imageVector = Icons.Filled.Home,
-                                        contentDescription = "Back Home"
-
+                                    RadioButton(
+                                        enabled = !isShowSplashScreen,
+                                        selected = selectedOption == option,
+                                        onClick = { selectedOption = option },
+                                        modifier = Modifier
+                                            .clickable { selectedOption = option }
+                                            .align(Alignment.CenterVertically)
+                                    )
+                                    Text(
+                                        color = if (selectedOption == option) {
+                                            Color.White
+                                        } else {
+                                            Color.Black
+                                        },
+                                        text = "$option",
+                                        fontSize = 20.sp,
+                                        fontWeight = FontWeight.Bold,
+                                        modifier = Modifier
+                                            .align(Alignment.CenterVertically)
                                     )
                                 }
-                                Spacer(modifier = Modifier.width(10.dp))
-                                Button(
-                                    onClick = {
-                                        changeIsShowSplashScreen(true)
-                                        remainingSeconds = 1950f
-                                        questions = QuestionDataBase.createQuestions()
-                                        quizFinished = false
-                                        currentQuestionNumber = 1
-                                        currentQuestion = questions.getOrNull(currentQuestionNumber - 1)
-                                    },
-                                    modifier = Modifier.padding(10.dp)
-                                ) {
-                                    Icon(
-                                        modifier = Modifier.padding(3.dp),
-                                        imageVector = Icons.Filled.Refresh,
-                                        contentDescription = "PLay again" )
-                                }
                             }
-
                         }
                     }
                 }
+            } else {
+                gameViewModel.addNewScore(GameScore(gameName = "quiz", score = score))
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(vertical = 30.dp, horizontal = 30.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+
+                    ) {
+                    Card(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 100.dp),
+                        shape = RoundedCornerShape(10.dp),
+                    ) {
+                        Text(
+                            textAlign = TextAlign.Center,
+                            text = "Chúc mừng,${user.username}!",
+                            fontSize = 30.sp,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier
+                                .padding(
+                                    top = 20.dp,
+                                    bottom = 20.dp,
+
+                                    )
+                                .wrapContentSize()
+                                .fillMaxWidth()
+
+                        )
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth(0.4f)
+                                .aspectRatio(1f)
+                                .align(Alignment.CenterHorizontally)
+                                .padding(bottom = 20.dp)
+                        ) {
+                            AsyncImage(
+                                modifier = Modifier
+                                    .matchParentSize()
+                                    .clip(CircleShape),
+                                model = ImageRequest.Builder(context)
+                                    .data(user.avatarUrl)
+                                    .error(R.drawable.default_user)
+                                    .crossfade(true)
+                                    .build(),
+                                placeholder = painterResource(R.drawable.default_user),
+                                contentDescription = stringResource(R.string.user_avatar),
+                                contentScale = ContentScale.Crop,
+
+                                )
+                        }
+                        Text(
+                            textAlign = TextAlign.Center,
+                            text = "Điểm: $score/100",
+                            fontSize = 30.sp,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier
+                                .wrapContentSize()
+                                .fillMaxWidth()
+                        )
+
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = 10.dp, bottom = 20.dp),
+                            horizontalArrangement = Arrangement.Center
+                        ) {
+                            Button(
+                                onClick = {
+                                    navController.popBackStack()
+                                },
+                                modifier = Modifier.padding(10.dp)
+                            ) {
+                                Icon(
+                                    modifier = Modifier.padding(3.dp),
+                                    imageVector = Icons.Filled.Home,
+                                    contentDescription = "Back Home"
+
+                                )
+                            }
+                            Spacer(modifier = Modifier.width(10.dp))
+                            Button(
+                                onClick = {
+                                    changeIsShowSplashScreen(true)
+                                    remainingSeconds = 1950f
+                                    questions = QuestionDataBase.createQuestions()
+                                    quizFinished = false
+                                    currentQuestionNumber = 1
+                                    currentQuestion = questions.getOrNull(currentQuestionNumber - 1)
+                                },
+                                modifier = Modifier.padding(10.dp)
+                            ) {
+                                Icon(
+                                    modifier = Modifier.padding(3.dp),
+                                    imageVector = Icons.Filled.Refresh,
+                                    contentDescription = "PLay again"
+                                )
+                            }
+                        }
+
+                    }
+                }
             }
-        },
-        )
+        }
+    }
 }

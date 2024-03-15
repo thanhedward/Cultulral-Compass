@@ -50,7 +50,7 @@ fun HomeView(
     placeViewModel: PlaceViewModel,
     libraryViewModel: LibraryViewModel,
     profileViewModel: ProfileViewModel,
-
+    score: Long,
     navigateToDetails: (Int) -> Unit
 ) {
 
@@ -92,7 +92,7 @@ fun HomeView(
                 PlacePages.Place -> PlacePage(placeViewModel, navigateToDetails)
                 PlacePages.Profile -> ProfilePage(profileViewModel)
                 PlacePages.Library -> LibraryPage(libraryViewModel, navigateToDetails)
-                PlacePages.MiniGame -> MiniGamePage(navController)
+                PlacePages.MiniGame -> MiniGamePage(navController,score)
             }
 
         }

@@ -27,6 +27,7 @@ import me.ppvan.meplace.viewmodel.RegisterViewModel
 import me.ppvan.meplace.viewmodel.PlaceViewModel
 import me.ppvan.meplace.viewmodel.viewModelFactory
 import me.ppvan.meplace.ui.view.QuizGame.QuizGameView
+import me.ppvan.meplace.viewmodel.GameViewModel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -71,10 +72,14 @@ fun MePlaceApp() {
         ProfileViewModel(MePlaceApplication.appModule.authService)
     })
 
+    val gameViewModel = viewModel<GameViewModel>(factory = viewModelFactory {
+        GameViewModel(MePlaceApplication.appModule.miniGameService)
+    })
+
     NavHost(navController = navigator, startDestination = Routes.Home.name) {
         composable(route = Routes.Home.name) {
             HomeView(
-                navigator, homeViewModel, placeViewModel, libraryViewModel, profileViewModel,
+                navigator, homeViewModel, placeViewModel, libraryViewModel, profileViewModel, gameViewModel.quizHighScore,
                 navigateToDetails = { id -> navigator.navigate("${Routes.Place.name}/${id}") })
         }
         composable(
@@ -116,7 +121,7 @@ fun MePlaceApp() {
         }
 
         composable(route = Routes.QuizGame.name) {
-            QuizGameView(navigator, profileViewModel)
+            QuizGameView(navigator, profileViewModel, gameViewModel)
         }
 
     }
