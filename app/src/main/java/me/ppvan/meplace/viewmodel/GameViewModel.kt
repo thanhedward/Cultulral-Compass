@@ -1,5 +1,7 @@
 package me.ppvan.meplace.viewmodel
 
+import androidx.compose.runtime.mutableLongStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
@@ -10,16 +12,16 @@ import me.ppvan.meplace.repository.AppMiniGameService
 
 
 class GameViewModel constructor(private val gameService: AppMiniGameService) : ViewModel() {
-    var quizHighScore:Long = 0
+    var quizHighScore: Long = 0
 
     init {
-        loadQuizDataData()
+        loadQuizData()
     }
-    private fun loadQuizDataData() {
+    private fun loadQuizData() {
         viewModelScope.launch(Dispatchers.IO) {
             val currentHighScore = gameService.getHighestScore("quiz")
             withContext(Dispatchers.Main) {
-               quizHighScore = currentHighScore
+               quizHighScore= currentHighScore
             }
         }
 
@@ -28,7 +30,12 @@ class GameViewModel constructor(private val gameService: AppMiniGameService) : V
     fun addNewScore(score: GameScore) {
         viewModelScope.launch(Dispatchers.IO) {
             gameService.insert(score)
+            val currentHighScore = gameService.getHighestScore("quiz")
+            withContext(Dispatchers.Main) {
+                quizHighScore = currentHighScore
+            }
         }
+
 
     }
 
