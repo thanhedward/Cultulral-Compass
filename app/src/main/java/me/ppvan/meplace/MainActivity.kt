@@ -79,7 +79,7 @@ fun MePlaceApp() {
     NavHost(navController = navigator, startDestination = Routes.Home.name) {
         composable(route = Routes.Home.name) {
             HomeView(
-                navigator, homeViewModel, placeViewModel, libraryViewModel, profileViewModel, gameViewModel.quizHighScore,
+                navigator, homeViewModel, placeViewModel, libraryViewModel, profileViewModel, gameViewModel,
                 navigateToDetails = { id -> navigator.navigate("${Routes.Place.name}/${id}") })
         }
         composable(

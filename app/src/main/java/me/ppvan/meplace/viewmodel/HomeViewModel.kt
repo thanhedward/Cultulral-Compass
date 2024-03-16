@@ -9,6 +9,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import me.ppvan.meplace.data.Destination
 import me.ppvan.meplace.repository.DestinationRepository
+import me.ppvan.meplace.repository.GameService
 
 enum class HomeStates {
     Loading,
@@ -16,7 +17,7 @@ enum class HomeStates {
 }
 
 class HomeViewModel(
-    private val destinationRepository: DestinationRepository
+    private val destinationRepository: DestinationRepository,
 ) : ViewModel() {
 
     val state = mutableStateOf(HomeStates.Loading)

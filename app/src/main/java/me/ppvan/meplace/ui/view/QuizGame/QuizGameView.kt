@@ -195,8 +195,6 @@ fun QuizGame(
     val user: User = profileViewModel.loggedInUser.value
     val context = LocalContext.current
 
-
-
     LaunchedEffect(isRunning) {
         while (isRunning && remainingSeconds > 0) {
             delay(100)

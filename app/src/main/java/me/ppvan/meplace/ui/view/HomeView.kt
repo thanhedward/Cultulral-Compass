@@ -36,6 +36,7 @@ import me.ppvan.meplace.ui.page.LibraryPage
 import me.ppvan.meplace.ui.page.MiniGamePage
 import me.ppvan.meplace.ui.page.ProfilePage
 import me.ppvan.meplace.ui.page.PlacePage
+import me.ppvan.meplace.viewmodel.GameViewModel
 import me.ppvan.meplace.viewmodel.HomeViewModel
 import me.ppvan.meplace.viewmodel.LibraryViewModel
 import me.ppvan.meplace.viewmodel.ProfileViewModel
@@ -50,7 +51,7 @@ fun HomeView(
     placeViewModel: PlaceViewModel,
     libraryViewModel: LibraryViewModel,
     profileViewModel: ProfileViewModel,
-    score: Long,
+    gameViewModel: GameViewModel,
     navigateToDetails: (Int) -> Unit
 ) {
 
@@ -92,7 +93,7 @@ fun HomeView(
                 PlacePages.Place -> PlacePage(placeViewModel, navigateToDetails)
                 PlacePages.Profile -> ProfilePage(profileViewModel)
                 PlacePages.Library -> LibraryPage(libraryViewModel, navigateToDetails)
-                PlacePages.MiniGame -> MiniGamePage(navController,score)
+                PlacePages.MiniGame -> MiniGamePage(navController, gameViewModel)
             }
 
         }
