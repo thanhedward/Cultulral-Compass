@@ -101,6 +101,7 @@ fun QuizGameView(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
+
         QuizGame(navController = navController, profileViewModel = profileViewModel, isShowSplashScreen = showSplashScreen, updateSplashScreen, gameViewModel)
 
         if (showSplashScreen) {

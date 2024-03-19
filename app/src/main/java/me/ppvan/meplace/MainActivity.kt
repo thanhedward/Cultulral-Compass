@@ -17,6 +17,8 @@ import androidx.navigation.compose.rememberNavController
 import me.ppvan.meplace.ui.theme.MePlaceTheme
 import me.ppvan.meplace.ui.view.HomeView
 import me.ppvan.meplace.ui.view.LoginView
+import me.ppvan.meplace.ui.view.MemoryGame.MemoryGame
+import me.ppvan.meplace.ui.view.MemoryGame.MemoryGameViewModel
 import me.ppvan.meplace.ui.view.RegisterView
 import me.ppvan.meplace.ui.view.PlaceDetailsView
 import me.ppvan.meplace.viewmodel.HomeViewModel
@@ -76,6 +78,8 @@ fun MePlaceApp() {
         GameViewModel(MePlaceApplication.appModule.miniGameService)
     })
 
+    val memoryGameViewModel = viewModel<MemoryGameViewModel>()
+
     NavHost(navController = navigator, startDestination = Routes.Home.name) {
         composable(route = Routes.Home.name) {
             HomeView(
@@ -124,12 +128,20 @@ fun MePlaceApp() {
             QuizGameView(navigator, profileViewModel, gameViewModel)
         }
 
+        composable(route = Routes.MemoryGame.name) {
+            MemoryGame(
+                state = memoryGameViewModel.state,
+                onAction = memoryGameViewModel::onAction,
+                navigator
+            )
+        }
+
     }
 
 }
 
 enum class Routes {
-    Home, Place, Register, Login, QuizGame
+    Home, Place, Register, Login, QuizGame, MemoryGame
 }
 
 @Preview(showBackground = true)

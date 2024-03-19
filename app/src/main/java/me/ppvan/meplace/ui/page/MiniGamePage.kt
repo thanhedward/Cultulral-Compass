@@ -64,6 +64,13 @@ fun MiniGamePage(
                         navController.navigate(Routes.QuizGame.name)
                     }
                 }
+
+                item {
+                    RoundedGameItem("Ghép thẻ", gameViewModel
+                    ){
+                        navController.navigate(Routes.MemoryGame.name)
+                    }
+                }
             }
         }
     }
