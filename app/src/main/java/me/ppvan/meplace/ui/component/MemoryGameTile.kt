@@ -20,6 +20,7 @@ import androidx.compose.ui.composed
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
@@ -37,19 +38,13 @@ fun MemoryGameTile(
 ) {
     Box(
         modifier = Modifier
-            .aspectRatio(1f)
-            .clip(RoundedCornerShape(32.dp))
-            .aspectRatio(1f)
+            .aspectRatio(3/4f)
             .bounceClickable(onAnimationFinished = { onClick() })
             .background(
-                color = Color(0x00FFFFFF),
-                shape = RoundedCornerShape(32.dp)
+                color = Color.White,
             )
-
             .then(modifier)
     ) {
-
-
         Image(
             painter = painterResource(
                 id =
@@ -58,9 +53,10 @@ fun MemoryGameTile(
                     "drawable",
                     LocalContext.current.packageName
                 )
-                else R.drawable.bocchi
+                else R.drawable.card
             ),
-            contentDescription = null, // Content description can be set as needed
+            contentDescription = null,
+            contentScale = ContentScale.FillHeight,
             modifier = Modifier.fillMaxSize()
         )
         Log.i("tile drawing", "drawing ${tile.type}")
