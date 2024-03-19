@@ -3,12 +3,10 @@ package me.ppvan.meplace.ui.view.MemoryGame
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material3.Button
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -34,7 +32,7 @@ fun MemoryGame(
     onAction: (GameAction) -> Unit,
     navController: NavHostController,
 ) {
-    val spaceBetween = 8.dp
+    val spaceBetween = 2.dp
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
@@ -67,7 +65,6 @@ fun MemoryGame(
                     .background(MaterialTheme.colorScheme.background)
                     .fillMaxSize(1f)
             ) {
-                Text("Temps écoulé : ${"%.2f".format(0f)}s")
                 TileGrid(spaceBetween, state, onAction)
             }
         }
