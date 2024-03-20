@@ -18,12 +18,14 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Mic
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.Place
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SearchBar
@@ -44,6 +46,7 @@ import coil.compose.AsyncImage
 import me.ppvan.meplace.data.Destination
 import me.ppvan.meplace.viewmodel.PlaceViewModel
 import me.ppvan.meplace.R
+import me.ppvan.meplace.ui.component.SpeechToTextButton
 
 @Composable
 fun PlacePage(viewModel: PlaceViewModel, navigateToDetails: (Int) -> Unit) {
@@ -65,7 +68,8 @@ fun PlacePage(viewModel: PlaceViewModel, navigateToDetails: (Int) -> Unit) {
             suggestions,
             viewModel::onSuggesting,
             viewModel::onSearchPlace,
-            viewModel::onActiveChange
+            viewModel::onActiveChange,
+            viewModel
         )
         Spacer(modifier = Modifier.height(20.dp))
         PlaceList(places = results, onItemClick = navigateToDetails)
@@ -81,7 +85,8 @@ fun MePlaceTopBar(
     suggestions: List<Destination>,
     onQueryChange: (String) -> Unit,
     onSearch: (String) -> Unit,
-    onActiveChange: (Boolean) -> Unit
+    onActiveChange: (Boolean) -> Unit,
+    viewModel: PlaceViewModel
 ) {
     SearchBar(
         modifier = Modifier,
@@ -90,6 +95,11 @@ fun MePlaceTopBar(
                 imageVector = Icons.Outlined.Search,
                 contentDescription = "Search"
             )
+        },
+        trailingIcon = {
+            SpeechToTextButton {spokenText ->
+                viewModel.onSearchPlace(spokenText)
+            }
         },
         placeholder = { Text(text = "Find a place") },
         shape = RoundedCornerShape(12.dp),
