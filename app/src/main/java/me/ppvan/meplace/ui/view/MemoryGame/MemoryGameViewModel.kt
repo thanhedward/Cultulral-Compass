@@ -28,6 +28,7 @@ class MemoryGameViewModel : ViewModel() {
         }
     }
 
+
     private fun pauseTimer() {
     }
 
@@ -114,6 +115,13 @@ class MemoryGameViewModel : ViewModel() {
 
     private fun resetGame() {
         state = GameState(generateNewTileList(tilesAmount))
+    }
+
+    fun getGameState(): Boolean {
+        for(tile in state.tilesList) {
+            if(!tile.faceUp) return false
+        }
+        return true
     }
 
     private fun updateFaceInState(tile: Tile, isUp: Boolean) {

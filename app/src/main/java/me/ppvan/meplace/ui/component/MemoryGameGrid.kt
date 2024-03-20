@@ -16,6 +16,7 @@ fun MemoryGameGrid(
     spaceBetween: Dp,
     state: GameState,
     onAction: (GameAction) -> Unit,
+    onCheckGameFinished: () -> Unit
 ) {
     LazyVerticalGrid(
         columns = GridCells.Adaptive(120.dp),
@@ -26,6 +27,7 @@ fun MemoryGameGrid(
                     modifier = Modifier.padding(spaceBetween),
                     onClick = {
                         onAction(GameAction.TileClicked(state.tilesList[i]))
+                        onCheckGameFinished()
                     },)
             }
         }
