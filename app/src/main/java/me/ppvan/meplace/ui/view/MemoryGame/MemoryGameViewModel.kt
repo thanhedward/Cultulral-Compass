@@ -29,8 +29,6 @@ class MemoryGameViewModel : ViewModel() {
     }
 
     private fun pauseTimer() {
-
-
     }
 
     // Function to handle tile clicked
@@ -87,16 +85,19 @@ class MemoryGameViewModel : ViewModel() {
 
                 viewModelScope.launch {
                     delay(1000)
-                    updateFaceInState(
-                        tile = clickedTile,
-                        isUp = false
-                    )
+
                     updateFaceInState(
                         tile = state.rememberedTile!!,
                         isUp = false
                     )
+
+                    updateFaceInState(
+                        tile = clickedTile,
+                        isUp = false,
+                    )
                     state =
                         state.copy(rememberedTile = null, amountOfTries = state.amountOfTries + 1)
+
                 }
 
 
@@ -122,6 +123,9 @@ class MemoryGameViewModel : ViewModel() {
             }
         )
     }
+
+
+
 
     // Generate a list of Tile objects of size "size"
     private fun generateNewTileList(size: Int): List<Tile> {

@@ -9,12 +9,13 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import me.ppvan.meplace.ui.utils.GameAction
 import me.ppvan.meplace.ui.view.MemoryGame.GameState
+import me.ppvan.meplace.ui.view.MemoryGame.MemoryGameViewModel
 
 @Composable
-fun TileGrid(
+fun MemoryGameGrid(
     spaceBetween: Dp,
     state: GameState,
-    onAction: (GameAction) -> Unit
+    onAction: (GameAction) -> Unit,
 ) {
     LazyVerticalGrid(
         columns = GridCells.Adaptive(120.dp),
@@ -25,7 +26,7 @@ fun TileGrid(
                     modifier = Modifier.padding(spaceBetween),
                     onClick = {
                         onAction(GameAction.TileClicked(state.tilesList[i]))
-                    })
+                    },)
             }
         }
     )

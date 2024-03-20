@@ -22,7 +22,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import me.ppvan.meplace.ui.component.TileGrid
+import me.ppvan.meplace.ui.component.MemoryGameGrid
 import me.ppvan.meplace.ui.utils.GameAction
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -31,6 +31,7 @@ fun MemoryGame(
     state: GameState,
     onAction: (GameAction) -> Unit,
     navController: NavHostController,
+    memoryGameViewModel: MemoryGameViewModel
 ) {
     val spaceBetween = 2.dp
     Scaffold(
@@ -65,7 +66,7 @@ fun MemoryGame(
                     .background(MaterialTheme.colorScheme.background)
                     .fillMaxSize(1f)
             ) {
-                TileGrid(spaceBetween, state, onAction)
+                MemoryGameGrid(spaceBetween, state, onAction)
             }
         }
 
