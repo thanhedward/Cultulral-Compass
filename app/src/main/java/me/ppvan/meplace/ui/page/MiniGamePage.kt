@@ -105,8 +105,6 @@ fun RoundedGameItem(
     color2: Color,
     onClick: () -> Unit,
 ) {
-
-
     Card(
         modifier = Modifier
             .fillMaxWidth()
