@@ -133,6 +133,7 @@ fun MemoryGame(
                     ){
                     isGameFinished = memoryGameViewModel.getGameState()
                 }
+
             }
         }
 
