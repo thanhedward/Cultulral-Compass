@@ -13,9 +13,10 @@ import me.ppvan.meplace.repository.AppMiniGameService
 
 class GameViewModel constructor(private val gameService: AppMiniGameService) : ViewModel() {
     var quizHighScore: Long = 0
-
+    var memoryHighScore: Long = 300
     init {
         loadQuizData()
+        loadMemoryGameData()
     }
     private fun loadQuizData() {
         viewModelScope.launch(Dispatchers.IO) {
@@ -27,16 +28,26 @@ class GameViewModel constructor(private val gameService: AppMiniGameService) : V
 
     }
 
+    private fun loadMemoryGameData() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val currentHighScore = gameService.getHighestScore("memory")
+            withContext(Dispatchers.Main) {
+                memoryHighScore= currentHighScore
+            }
+        }
+
+    }
+
     fun addNewScore(score: GameScore) {
         viewModelScope.launch(Dispatchers.IO) {
             gameService.insert(score)
             val currentHighScore = gameService.getHighestScore("quiz")
+            val currentMemoryHighScore = gameService.getHighestScore("memory")
             withContext(Dispatchers.Main) {
                 quizHighScore = currentHighScore
+                memoryHighScore = currentMemoryHighScore
             }
         }
-
-
     }
 
 

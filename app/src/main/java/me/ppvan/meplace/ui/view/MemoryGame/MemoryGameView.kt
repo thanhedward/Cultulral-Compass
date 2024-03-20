@@ -35,7 +35,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -49,8 +49,10 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.navigation.NavHostController
 import kotlinx.coroutines.delay
+import me.ppvan.meplace.data.GameScore
 import me.ppvan.meplace.ui.component.MemoryGameGrid
 import me.ppvan.meplace.ui.utils.GameAction
+import me.ppvan.meplace.viewmodel.GameViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -58,9 +60,10 @@ fun MemoryGame(
     state: GameState,
     onAction: (GameAction) -> Unit,
     navController: NavHostController,
-    memoryGameViewModel: MemoryGameViewModel
+    memoryGameViewModel: MemoryGameViewModel,
+    gameViewModel: GameViewModel
 ) {
-    var seconds by remember { mutableIntStateOf(3) }
+    var seconds by remember { mutableLongStateOf(300) }
     val spaceBetween = 2.dp
     var showDialog by remember { mutableStateOf(false) }
     var isGameFinished by remember {
@@ -74,7 +77,7 @@ fun MemoryGame(
             delay(1000)
             seconds--
         }
-        if(seconds == 0) {
+        if(seconds.toInt() == 0) {
             isGameFinished = true
             isWin = false
         }
@@ -208,10 +211,12 @@ fun MemoryGame(
     }
 
     if(isGameFinished){
+        if(isWin){
+            gameViewModel.addNewScore(GameScore(gameName="memory", score = seconds))
+        }
         Surface(
             color = Color.Gray.copy(alpha = 0.6f),
             modifier = Modifier.fillMaxSize()
-
         ){
             Dialog(onDismissRequest = { }) {
                 Card(
@@ -295,7 +300,7 @@ fun MemoryGame(
 }
 
 @Composable
-fun formatTime(seconds: Int): String {
+fun formatTime(seconds: Long): String {
     val hours = seconds / 3600
     val minutes = (seconds % 3600) / 60
     val remainingSeconds = seconds % 60

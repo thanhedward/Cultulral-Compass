@@ -53,20 +53,41 @@ fun MiniGamePage(
             TopAppBar(title = { Text(text = "Danh sách trò chơi") })
         }
     ) { paddingValues ->
+
+        fun convertTime(seconds: Int): String {
+            val minutes = seconds / 60
+            val remainingSeconds = seconds % 60
+
+            return buildString {
+                if (minutes > 0) {
+                    append("$minutes phút ")
+                }
+                append("$remainingSeconds giây")
+            }
+        }
         Column(modifier = Modifier.padding(paddingValues)) {
             LazyColumn(
                 modifier = Modifier.fillMaxWidth(),
                 contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
             ) {
                 item {
-                    RoundedGameItem("Đố vui", gameViewModel
+                    RoundedGameItem(
+                        "Đố vui",
+                        gameViewModel.quizHighScore.toString() + "/100",
+                        Color(0xFF2980B9),
+                        Color.Blue.copy(0.8f)
+
                     ){
                         navController.navigate(Routes.QuizGame.name)
                     }
                 }
 
                 item {
-                    RoundedGameItem("Ghép thẻ", gameViewModel
+                    RoundedGameItem(
+                        "Ghép thẻ",
+                        convertTime(300 - gameViewModel.memoryHighScore.toInt()),
+                        Color(0xFFFFA07A),
+                        Color(0xFFE74C3C)
                     ){
                         navController.navigate(Routes.MemoryGame.name)
                     }
@@ -79,11 +100,13 @@ fun MiniGamePage(
 @Composable
 fun RoundedGameItem(
     name: String,
-    gameViewModel: GameViewModel,
+    score: String,
+    color1: Color,
+    color2: Color,
     onClick: () -> Unit,
 ) {
 
-    var score = gameViewModel.quizHighScore
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -92,7 +115,8 @@ fun RoundedGameItem(
         shape = RoundedCornerShape(25.dp),
         elevation = CardDefaults.cardElevation(8.dp)
     ) {
-        val brush = Brush.linearGradient(listOf(Color(0xFF2980B9), Color.Blue.copy(0.8f)))
+//        val brush = Brush.linearGradient(listOf(Color(0xFF2980B9), Color.Blue.copy(0.8f)))
+        val brush = Brush.linearGradient(listOf(color1, color2))
         Column(
             modifier = Modifier
                 .height(150.dp)
@@ -112,7 +136,7 @@ fun RoundedGameItem(
                     fontWeight = FontWeight.Bold,
                 )
                 Text(
-                    text = "Kỉ lục: $score/100",
+                    text = "Kỉ lục: $score",
                     fontSize = 16.sp,
                     color = Color.White,
                     fontWeight = FontWeight.Bold,
