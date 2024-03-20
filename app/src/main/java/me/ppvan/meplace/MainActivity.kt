@@ -133,7 +133,8 @@ fun MePlaceApp() {
                 state = memoryGameViewModel.state,
                 onAction = memoryGameViewModel::onAction,
                 navigator,
-                memoryGameViewModel
+                memoryGameViewModel,
+                gameViewModel
             )
 
         }
