@@ -26,23 +26,35 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.ListAlt
 import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material.icons.outlined.EditNote
+import androidx.compose.material.icons.outlined.FavoriteBorder
+import androidx.compose.material.icons.outlined.Info
+import androidx.compose.material.icons.outlined.Lock
+import androidx.compose.material.icons.outlined.Logout
+import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material3.Button
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -51,6 +63,7 @@ import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.ListItem
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -69,6 +82,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import me.ppvan.meplace.data.FakeDestinationDataSource
@@ -101,7 +115,7 @@ fun ProfilePage(profileViewModel: ProfileViewModel) {
                     profileViewModel.updateUserProfile(user)
                 })
         } else {
-            ProfileViewPage(user) { profileViewModel.navigateToEditMode() }
+            ProfileViewPage(user, profileViewModel ) { profileViewModel.navigateToEditMode() }
         }
     }
 
@@ -340,40 +354,31 @@ fun ProfileEditPage(
 @Composable
 fun ProfileViewPage(
     user: User,
-    onEditClick: () -> Unit
+    profileViewModel: ProfileViewModel,
+    onEditClick: () -> Unit,
 ) {
     val context = LocalContext.current
 
     Column(Modifier.fillMaxSize()) {
-        TopAppBar(
-            title = {
 
-            },
-            navigationIcon = {
-                Icon(
-                    imageVector = Icons.AutoMirrored.Default.ArrowBack,
-                    contentDescription = "Back"
-                )
-            },
-            actions = {
-                IconButton(onClick = { onEditClick() }) {
-                    Icon(imageVector = Icons.Outlined.EditNote, contentDescription = null)
-                }
-            }
-
+        Text(
+            text = "Cá nhân",
+            fontSize = 30.sp,
+            fontWeight = FontWeight.SemiBold,
+            modifier = Modifier.padding(start = 10.dp, top = 15.dp, bottom = 20.dp)
         )
 
         Surface {
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth(0.4f)
-                        .aspectRatio(1f)
-                ) {
+            Column(horizontalAlignment = Alignment.Start,
+                modifier = Modifier.padding(start = 5.dp)) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Spacer(modifier = Modifier.width(5.dp))
                     AsyncImage(
                         modifier = Modifier
-                            .matchParentSize()
-                            .clip(CircleShape),
+                            .clip(CircleShape)
+                            .width(100.dp)
+                            .height(100.dp)
+                            ,
                         model = ImageRequest.Builder(context)
                             .data(user.avatarUrl)
                             .error(R.drawable.default_user)
@@ -383,73 +388,147 @@ fun ProfileViewPage(
                         contentDescription = stringResource(R.string.user_avatar),
                         contentScale = ContentScale.Crop,
                     )
+                    Spacer(modifier = Modifier.width(20.dp))
+                    Column {
+                        Text(
+                            text = user.fullName,
+                            style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.SemiBold)
+                        )
+                        Text(
+                            text = "@${user.username}",
+                            style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.Medium, color = Color.Gray)
+                        )
+                    }
 
                 }
-                Spacer(modifier = Modifier.height(6.dp))
+
+                Spacer(modifier = Modifier.height(30.dp))
+
                 Text(
-                    text = "@${user.username}",
-                    style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.Bold)
+                    text = "Trung tâm tài khoản",
+                    style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.SemiBold, color = Color.Black.copy(0.9f), fontSize = 18.sp),
+                    modifier = Modifier.padding(start = 5.dp)
+
                 )
 
+                Spacer(modifier = Modifier.height(5.dp))
 
-                Spacer(modifier = Modifier.height(48.dp))
-
-                Box(modifier = Modifier.weight(1f), contentAlignment = Alignment.Center) {
+                Box(contentAlignment = Alignment.Center) {
                     Column(
-                        modifier = Modifier
-                            .fillMaxHeight()
-                            .padding(horizontal = 12.dp),
-                        verticalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
                         ProfileListItem(
                             icon = {
                                 Icon(
-                                    imageVector = Icons.Default.Person,
+                                    imageVector = Icons.Outlined.Person,
                                     contentDescription = null,
-                                    tint = MaterialTheme.colorScheme.primary
+                                    tint = MaterialTheme.colorScheme.primary,
+                                    modifier = Modifier.size(30.dp)
                                 )
                             },
-                            label = "Họ và tên",
-                            content = user.fullName
-                        )
+                            label = "Thông tin cá nhân",
+
+                        ){
+                            profileViewModel.navigateToEditMode()
+                        }
 
                         ProfileListItem(
                             icon = {
                                 Icon(
-                                    imageVector = Icons.Default.Email,
+                                    imageVector = Icons.Outlined.Lock,
                                     contentDescription = null,
-                                    tint = MaterialTheme.colorScheme.primary
+                                    tint = MaterialTheme.colorScheme.primary,
+                                    modifier = Modifier.size(30.dp)
                                 )
                             },
-                            label = "Email",
-                            content = user.email
-                        )
-
-                        ProfileListItem(
-                            icon = {
-                                Icon(
-                                    imageVector = Icons.Default.Phone,
-                                    contentDescription = null,
-                                    tint = MaterialTheme.colorScheme.primary
-                                )
-                            },
-                            label = "Số điện thoại",
-                            content = user.phoneNumber
-                        )
-
-                        ProfileListItem(
-                            icon = {
-                                Icon(
-                                    imageVector = Icons.Default.LocationOn,
-                                    contentDescription = null,
-                                    tint = MaterialTheme.colorScheme.primary
-                                )
-                            },
-                            label = "Tỉnh/Thành Phố",
-                            content = user.city
-                        )
+                            label = "Đổi mật khẩu",
+                        ){}
                     }
                 }
+
+                Spacer(modifier = Modifier.height(20.dp))
+
+                Text(
+                    text = "Dịch vụ",
+                    style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.SemiBold, color = Color.Black.copy(0.9f), fontSize = 18.sp),
+                    modifier = Modifier.padding(start = 5.dp)
+
+                )
+
+                Spacer(modifier = Modifier.height(5.dp))
+
+                Box(contentAlignment = Alignment.Center) {
+                    Column {
+                        ProfileListItem(
+                            icon = {
+                                Icon(
+                                    imageVector = Icons.Outlined.FavoriteBorder,
+                                    contentDescription = null,
+                                    tint = MaterialTheme.colorScheme.primary,
+                                    modifier = Modifier.size(30.dp)
+                                )
+                            },
+                            label = "Danh sách địa điểm yêu thích",
+
+                            ){
+
+                        }
+
+                        ProfileListItem(
+                            icon = {
+                                Icon(
+                                    imageVector = Icons.Default.ListAlt,
+                                    contentDescription = null,
+                                    tint = MaterialTheme.colorScheme.primary,
+                                    modifier = Modifier.size(30.dp)
+                                )
+                            },
+                            label = "Danh sách địa điểm đã đến",
+                        ){}
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(20.dp))
+
+                Text(
+                    text = "Khác",
+                    style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.SemiBold, color = Color.Black.copy(0.9f), fontSize = 18.sp),
+                    modifier = Modifier.padding(start = 5.dp)
+
+                )
+
+                Spacer(modifier = Modifier.height(5.dp))
+
+                Box(contentAlignment = Alignment.Center) {
+                    Column {
+                        ProfileListItem(
+                            icon = {
+                                Icon(
+                                    imageVector = Icons.Outlined.Info,
+                                    contentDescription = null,
+                                    tint = MaterialTheme.colorScheme.primary,
+                                    modifier = Modifier.size(30.dp)
+                                )
+                            },
+                            label = "Điều khoản dịch vụ",
+
+                            ){
+
+                        }
+
+                        ProfileListItem(
+                            icon = {
+                                Icon(
+                                    imageVector = Icons.Outlined.Logout,
+                                    contentDescription = null,
+                                    tint = MaterialTheme.colorScheme.primary,
+                                    modifier = Modifier.size(30.dp)
+                                )
+                            },
+                            label = "Đăng xuất",
+                        ){}
+                    }
+                }
+
             }
         }
     }
@@ -459,44 +538,29 @@ fun ProfileViewPage(
 fun ProfileListItem(
     icon: @Composable () -> Unit,
     label: String,
-    content: String
+    onClick: () -> Unit
 ) {
-    ElevatedCard {
-        Row(
-            modifier = Modifier
-                .height(IntrinsicSize.Max)
-                .padding(horizontal = 4.dp, vertical = 8.dp)
+    Box(modifier = Modifier.clickable(onClick = onClick)){
+        Row(modifier = Modifier
+            .padding(start = 5.dp, top = 8.dp, bottom = 8.dp)
+            .clip(RoundedCornerShape(16.dp))
         ) {
-            Box(
-                modifier = Modifier
-                    .size(50.dp)
-                    .background(MaterialTheme.colorScheme.surface, shape = CircleShape),
-                contentAlignment = Alignment.Center
-            ) {
+            Box(modifier = Modifier.width(40.dp)){
                 icon()
             }
-            Spacer(modifier = Modifier.width(12.dp))
-
-            Column(
+            Box(
                 Modifier
                     .weight(1f)
-//                .height(50.dp)
-                    .padding(4.dp),
-                verticalArrangement = Arrangement.SpaceBetween
+                    .padding(4.dp)
+                    .align(Alignment.CenterVertically),
             ) {
                 Text(
                     text = label,
-                    style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Light),
-                    color = MaterialTheme.colorScheme.outline
+                    fontSize = 16.sp
                 )
-                Text(text = content, style = MaterialTheme.typography.labelLarge)
+
             }
         }
     }
 }
 
-@Preview
-@Composable
-fun ProfilePagePreview() {
-    ProfileViewPage(User.default(), {})
-}

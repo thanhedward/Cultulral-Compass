@@ -29,6 +29,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SearchBar
+import androidx.compose.material3.SearchBarDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -71,7 +72,7 @@ fun PlacePage(viewModel: PlaceViewModel, navigateToDetails: (Int) -> Unit) {
             viewModel::onActiveChange,
             viewModel
         )
-        Spacer(modifier = Modifier.height(20.dp))
+        Spacer(modifier = Modifier.height(15.dp))
         PlaceList(places = results, onItemClick = navigateToDetails)
     }
 }
@@ -88,8 +89,11 @@ fun MePlaceTopBar(
     onActiveChange: (Boolean) -> Unit,
     viewModel: PlaceViewModel
 ) {
+    val horizontalPadding = if (active) 0.dp else 16.dp
+
     SearchBar(
-        modifier = Modifier,
+        modifier =  Modifier.padding(horizontal = horizontalPadding)
+            .fillMaxWidth(),
         leadingIcon = {
             Icon(
                 imageVector = Icons.Outlined.Search,
@@ -102,7 +106,7 @@ fun MePlaceTopBar(
             }
         },
         placeholder = { Text(text = "Find a place") },
-        shape = RoundedCornerShape(12.dp),
+        shape = SearchBarDefaults.inputFieldShape,
         query = query,
         onQueryChange = onQueryChange,
         onSearch = onSearch,
@@ -126,6 +130,7 @@ fun MePlaceTopBar(
         }
     }
 }
+
 
 
 @Composable
