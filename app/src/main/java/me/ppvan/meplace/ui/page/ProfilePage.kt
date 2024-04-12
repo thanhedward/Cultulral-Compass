@@ -34,11 +34,18 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.ListAlt
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material.icons.outlined.EditNote
+import androidx.compose.material.icons.outlined.FavoriteBorder
+import androidx.compose.material.icons.outlined.Info
+import androidx.compose.material.icons.outlined.Lock
+import androidx.compose.material.icons.outlined.Logout
+import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material3.Button
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -404,18 +411,15 @@ fun ProfileViewPage(
 
                 )
 
-                Spacer(modifier = Modifier.height(10.dp))
+                Spacer(modifier = Modifier.height(5.dp))
 
-                Box(modifier = Modifier.weight(1f), contentAlignment = Alignment.Center) {
+                Box(contentAlignment = Alignment.Center) {
                     Column(
-                        modifier = Modifier
-                            .fillMaxHeight()
-                            ,
                     ) {
                         ProfileListItem(
                             icon = {
                                 Icon(
-                                    imageVector = Icons.Default.Person,
+                                    imageVector = Icons.Outlined.Person,
                                     contentDescription = null,
                                     tint = MaterialTheme.colorScheme.primary,
                                     modifier = Modifier.size(30.dp)
@@ -430,7 +434,7 @@ fun ProfileViewPage(
                         ProfileListItem(
                             icon = {
                                 Icon(
-                                    imageVector = Icons.Default.Lock,
+                                    imageVector = Icons.Outlined.Lock,
                                     contentDescription = null,
                                     tint = MaterialTheme.colorScheme.primary,
                                     modifier = Modifier.size(30.dp)
@@ -440,6 +444,91 @@ fun ProfileViewPage(
                         ){}
                     }
                 }
+
+                Spacer(modifier = Modifier.height(20.dp))
+
+                Text(
+                    text = "Dịch vụ",
+                    style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.SemiBold, color = Color.Black.copy(0.9f), fontSize = 18.sp),
+                    modifier = Modifier.padding(start = 5.dp)
+
+                )
+
+                Spacer(modifier = Modifier.height(5.dp))
+
+                Box(contentAlignment = Alignment.Center) {
+                    Column {
+                        ProfileListItem(
+                            icon = {
+                                Icon(
+                                    imageVector = Icons.Outlined.FavoriteBorder,
+                                    contentDescription = null,
+                                    tint = MaterialTheme.colorScheme.primary,
+                                    modifier = Modifier.size(30.dp)
+                                )
+                            },
+                            label = "Danh sách địa điểm yêu thích",
+
+                            ){
+
+                        }
+
+                        ProfileListItem(
+                            icon = {
+                                Icon(
+                                    imageVector = Icons.Default.ListAlt,
+                                    contentDescription = null,
+                                    tint = MaterialTheme.colorScheme.primary,
+                                    modifier = Modifier.size(30.dp)
+                                )
+                            },
+                            label = "Danh sách địa điểm đã đến",
+                        ){}
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(20.dp))
+
+                Text(
+                    text = "Khác",
+                    style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.SemiBold, color = Color.Black.copy(0.9f), fontSize = 18.sp),
+                    modifier = Modifier.padding(start = 5.dp)
+
+                )
+
+                Spacer(modifier = Modifier.height(5.dp))
+
+                Box(contentAlignment = Alignment.Center) {
+                    Column {
+                        ProfileListItem(
+                            icon = {
+                                Icon(
+                                    imageVector = Icons.Outlined.Info,
+                                    contentDescription = null,
+                                    tint = MaterialTheme.colorScheme.primary,
+                                    modifier = Modifier.size(30.dp)
+                                )
+                            },
+                            label = "Điều khoản dịch vụ",
+
+                            ){
+
+                        }
+
+                        ProfileListItem(
+                            icon = {
+                                Icon(
+                                    imageVector = Icons.Outlined.Logout,
+                                    contentDescription = null,
+                                    tint = MaterialTheme.colorScheme.primary,
+                                    modifier = Modifier.size(30.dp)
+                                )
+                            },
+                            label = "Đăng xuất",
+                        ){}
+                    }
+                }
+
             }
         }
     }
