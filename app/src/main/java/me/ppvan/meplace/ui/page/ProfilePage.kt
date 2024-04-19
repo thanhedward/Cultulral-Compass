@@ -533,7 +533,9 @@ fun ProfileViewPage(
                                 )
                             },
                             label = "Đăng xuất",
-                        ){}
+                        ){
+                            navController.navigate(Routes.Login.name)
+                        }
                     }
                 }
 
