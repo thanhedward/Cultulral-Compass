@@ -83,6 +83,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import me.ppvan.meplace.data.FakeDestinationDataSource
@@ -90,13 +91,17 @@ import me.ppvan.meplace.data.User
 import me.ppvan.meplace.ui.component.rememberImeState
 import me.ppvan.meplace.viewmodel.ProfileViewModel
 import me.ppvan.meplace.R
+import me.ppvan.meplace.Routes
 import me.ppvan.moon.utils.ScaleTransition
 
 
 @Composable
-fun ProfilePage(profileViewModel: ProfileViewModel) {
+fun ProfilePage(
+    profileViewModel: ProfileViewModel,
+    navController: NavHostController,
+) {
 
-    val user by profileViewModel.loggedInUser
+    val user: User = profileViewModel.loggedInUser
     val editMode by profileViewModel.editMode
 
     AnimatedContent(
@@ -115,7 +120,7 @@ fun ProfilePage(profileViewModel: ProfileViewModel) {
                     profileViewModel.updateUserProfile(user)
                 })
         } else {
-            ProfileViewPage(user, profileViewModel ) { profileViewModel.navigateToEditMode() }
+            ProfileViewPage(navController, user, profileViewModel ) { profileViewModel.navigateToEditMode() }
         }
     }
 
@@ -180,7 +185,7 @@ fun ProfileEditPage(
         CenterAlignedTopAppBar(
             title = {
                 Text(
-                    text = "Profile Page",
+                    text = "Thông tin cá nhân",
                     style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold)
                 )
             },
@@ -342,7 +347,7 @@ fun ProfileEditPage(
                     .padding(horizontal = 12.dp)
             ) {
                 Text(
-                    text = "Cập nhật Profile",
+                    text = "Cập nhật thông tin",
                     style = MaterialTheme.typography.bodyLarge
                 )
             }
@@ -353,6 +358,7 @@ fun ProfileEditPage(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfileViewPage(
+    navController: NavHostController,
     user: User,
     profileViewModel: ProfileViewModel,
     onEditClick: () -> Unit,
@@ -378,7 +384,7 @@ fun ProfileViewPage(
                             .clip(CircleShape)
                             .width(100.dp)
                             .height(100.dp)
-                            ,
+                        ,
                         model = ImageRequest.Builder(context)
                             .data(user.avatarUrl)
                             .error(R.drawable.default_user)
@@ -427,7 +433,7 @@ fun ProfileViewPage(
                             },
                             label = "Thông tin cá nhân",
 
-                        ){
+                            ){
                             profileViewModel.navigateToEditMode()
                         }
 
@@ -441,7 +447,9 @@ fun ProfileViewPage(
                                 )
                             },
                             label = "Đổi mật khẩu",
-                        ){}
+                        ){
+                            navController.navigate(Routes.ChangePass.name)
+                        }
                     }
                 }
 
@@ -525,7 +533,9 @@ fun ProfileViewPage(
                                 )
                             },
                             label = "Đăng xuất",
-                        ){}
+                        ){
+                            navController.navigate(Routes.Login.name)
+                        }
                     }
                 }
 
@@ -564,3 +574,155 @@ fun ProfileListItem(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ProfileEditPassPage(
+    navController: NavHostController,
+    profileViewModel: ProfileViewModel,
+    onBackPressed: () -> Unit,
+    onSubmit: (User) -> Unit
+) {
+    var expand by remember {
+        mutableStateOf(false)
+    }
+    val cities = FakeDestinationDataSource.dummyCities
+    var currentPassword by remember {
+        mutableStateOf("")
+    }
+    var newPassword by remember {
+        mutableStateOf("")
+    }
+    var reNewPassWord by remember {
+        mutableStateOf("")
+    }
+    var passwordMismatch by remember {
+        mutableStateOf(false)
+    }
+    var incorrectPassword by remember {
+        mutableStateOf(false)
+    }
+
+    val context = LocalContext.current
+
+    val formGroup = Modifier
+        .fillMaxWidth()
+        .padding(8.dp)
+    val imeState = rememberImeState()
+    val scrollState = rememberScrollState()
+
+    LaunchedEffect(key1 = imeState.value) {
+        if (imeState.value) {
+            scrollState.animateScrollTo(scrollState.maxValue, tween(300))
+        }
+    }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .imePadding(),
+        horizontalAlignment = Alignment.CenterHorizontally
+
+    ) {
+        CenterAlignedTopAppBar(
+            title = {
+                Text(
+                    text = "Thay đổi mật khẩu",
+                    style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold)
+                )
+            },
+            navigationIcon = {
+                IconButton(onClick = { onBackPressed() }) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Default.ArrowBack,
+                        contentDescription = "Back"
+                    )
+                }
+            }
+
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Column(
+            modifier = Modifier
+                .verticalScroll(scrollState)
+                .weight(1f, fill = false)
+                .padding(8.dp),
+        ) {
+            OutlinedTextField(
+                modifier = formGroup,
+                value = currentPassword,
+                onValueChange = { currentPassword = it },
+                label = { Text(text = "Mật khẩu cũ") },
+                colors = OutlinedTextFieldDefaults.colors()
+            )
+            Spacer(modifier = Modifier.height(5.dp))
+            OutlinedTextField(
+                modifier = formGroup,
+                value = newPassword,
+                onValueChange = { newPassword = it },
+                label = { Text(text = "Mật khẩu mới") },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email)
+            )
+            Spacer(modifier = Modifier.height(5.dp))
+            OutlinedTextField(
+                modifier = formGroup,
+                value = reNewPassWord,
+                onValueChange = {
+                    reNewPassWord = it
+                    // Kiểm tra nếu mật khẩu nhập lại không trùng khớp với mật khẩu mới
+                    passwordMismatch = it != newPassword
+                },
+                label = { Text(text = "Nhập lại mật khẩu mới") },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
+            )
+
+            // Hiển thị thông báo nếu mật khẩu không trùng khớp
+            if (passwordMismatch) {
+                Spacer(modifier = Modifier.height(2.dp))
+                Text(
+                    text = "Mật khẩu không trùng khớp",
+                    color = Color.Red,
+                    modifier = Modifier.padding(start = 16.dp)
+                )
+            }
+
+            Spacer(modifier = Modifier.height(5.dp))
+
+            Button(
+                onClick = {
+                    // Kiểm tra mật khẩu cũ có đúng không
+                    if (currentPassword != profileViewModel.loggedInUser.password) {
+                        incorrectPassword = true
+                    } else {
+                        var user = profileViewModel.loggedInUser.copy(
+                            password = newPassword
+                        )
+                        incorrectPassword = false
+                        profileViewModel.updateUserProfile(user)
+                        navController.popBackStack()
+                        Toast.makeText(context, "Thay đổi mật khẩu thành công", Toast.LENGTH_SHORT).show()
+                    }
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 12.dp, vertical = 12.dp)
+            ) {
+                Text(
+                    text = "Thay đổi mật khẩu",
+                    style = MaterialTheme.typography.bodyLarge
+                )
+            }
+
+            // Hiển thị thông báo nếu mật khẩu cũ không đúng
+            if (incorrectPassword) {
+                Spacer(modifier = Modifier.height(2.dp))
+                Text(
+                    text = "Mật khẩu cũ không đúng",
+                    color = Color.Red,
+                    modifier = Modifier.padding(start = 16.dp)
+                )
+            }
+        }
+    }
+}

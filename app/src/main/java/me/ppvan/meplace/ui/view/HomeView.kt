@@ -86,12 +86,12 @@ fun HomeView(
             when (page) {
                 PlacePages.Home -> HomePage(
                     homeViewModel,
-                    profileViewModel.loggedInUser.value,
+                    profileViewModel.loggedInUser,
                     navigateToDetails
                 )
 
                 PlacePages.Place -> PlacePage(placeViewModel, navigateToDetails)
-                PlacePages.Profile -> ProfilePage(profileViewModel)
+                PlacePages.Profile -> ProfilePage(profileViewModel, navController)
                 PlacePages.Library -> LibraryPage(libraryViewModel, navigateToDetails)
                 PlacePages.MiniGame -> MiniGamePage(navController, gameViewModel)
             }

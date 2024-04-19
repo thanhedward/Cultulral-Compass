@@ -52,7 +52,7 @@ fun LoginView(
         when (state) {
             LoginState.Idle -> {}
             LoginState.Success -> {
-                Toast.makeText(context, "Đăng nhập thành công", Toast.LENGTH_SHORT).show()
+
             }
 
             LoginState.Failed -> {

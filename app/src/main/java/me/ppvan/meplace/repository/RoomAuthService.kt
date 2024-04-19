@@ -1,6 +1,7 @@
 package me.ppvan.meplace.repository
 
 import android.util.Log
+import androidx.room.RoomDatabase
 import me.ppvan.meplace.dao.UserDao
 import me.ppvan.meplace.data.User
 

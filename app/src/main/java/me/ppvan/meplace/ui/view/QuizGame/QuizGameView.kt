@@ -193,7 +193,7 @@ fun QuizGame(
     var quizFinished by remember { mutableStateOf(false) }
     var isRunning by remember { mutableStateOf(true) }
     var remainingSeconds by remember { mutableFloatStateOf(1950.0f) }
-    val user: User = profileViewModel.loggedInUser.value
+    val user: User = profileViewModel.loggedInUser
     val context = LocalContext.current
 
     LaunchedEffect(isRunning) {

@@ -21,7 +21,7 @@ data class User(
                 username = "ppvan",
                 password = "",
                 avatarUrl = "",
-                fullName = "Phạm Văn Phúc",
+                fullName = "Phạm Văn Phú",
                 email = "phuclaplace@gmail.com",
                 phoneNumber = "098123456789",
                 city = "Hà Nội"
