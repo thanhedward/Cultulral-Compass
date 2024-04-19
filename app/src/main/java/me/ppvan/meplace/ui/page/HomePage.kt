@@ -69,6 +69,8 @@ fun HomePage(viewModel: HomeViewModel, user: User, navigateToDetail: (Int) -> Un
     }
 }
 
+
+
 @Composable
 fun HomeContent(
     populars: List<Destination>,
@@ -127,7 +129,7 @@ fun HomeHeader(modifier: Modifier = Modifier, user: User, navigateToAboutMe: () 
     ) {
         Column {
             Text(
-                text = "Xin chào\n${user.username}",
+                text = "Xin chào,\n${user.username}",
                 lineHeight = 36.sp,
                 color = MaterialTheme.colorScheme.onBackground,
                 fontSize = 24.sp,

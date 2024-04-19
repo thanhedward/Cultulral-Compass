@@ -43,7 +43,7 @@ class ProfileViewModel constructor(private val authService: AuthService) : ViewM
     }
 
     fun updateUserProfile(user: User) {
-        Log.d("ProfileViewModel", user.toString())
+
 
         val newUser = loggedInUser.value.copy(
             fullName = user.fullName.trim(),
@@ -52,10 +52,15 @@ class ProfileViewModel constructor(private val authService: AuthService) : ViewM
             city = user.city.trim(),
             avatarUrl = user.avatarUrl.trim()
         )
+        Log.d("ProfileViewModel", user.toString())
 
-        loggedInUser.value = newUser
         viewModelScope.launch(Dispatchers.IO) {
-            authService.update(user)
+            authService.update(newUser)
+            val user1 = authService.currentUser()
+            Log.i("Current User:", user1.toString())
+            withContext(Dispatchers.Main) {
+                loggedInUser.value = newUser
+            }
         }
     }
 
