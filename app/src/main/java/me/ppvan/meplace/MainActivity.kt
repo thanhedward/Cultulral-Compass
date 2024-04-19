@@ -14,6 +14,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import me.ppvan.meplace.ui.page.ProfileEditPassPage
 import me.ppvan.meplace.ui.theme.MePlaceTheme
 import me.ppvan.meplace.ui.view.HomeView
 import me.ppvan.meplace.ui.view.LoginView
@@ -138,13 +139,20 @@ fun MePlaceApp() {
             )
 
         }
+        composable(route = Routes.ChangePass.name) {
+            ProfileEditPassPage( navController = navigator, profileViewModel, onBackPressed = { navigator.popBackStack()}) {
+
+            }
+
+        }
+
 
     }
 
 }
 
 enum class Routes {
-    Home, Place, Register, Login, QuizGame, MemoryGame
+    Home, Place, Register, Login, QuizGame, MemoryGame, ChangePass
 }
 
 @Preview(showBackground = true)

@@ -1,7 +1,9 @@
 package me.ppvan.meplace.viewmodel
 
 import android.util.Log
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
@@ -15,7 +17,7 @@ import me.ppvan.meplace.repository.AuthService
 class ProfileViewModel constructor(private val authService: AuthService) : ViewModel() {
 
     val editMode = mutableStateOf(false)
-    val loggedInUser = mutableStateOf(User.default())
+    var loggedInUser: User by mutableStateOf(User.default())
 
     init {
         viewModelScope.launch {
@@ -45,7 +47,7 @@ class ProfileViewModel constructor(private val authService: AuthService) : ViewM
     fun updateUserProfile(user: User) {
 
 
-        val newUser = loggedInUser.value.copy(
+        val newUser = loggedInUser.copy(
             fullName = user.fullName.trim(),
             email = user.email.trim(),
             phoneNumber = user.phoneNumber.trim(),
@@ -59,7 +61,7 @@ class ProfileViewModel constructor(private val authService: AuthService) : ViewM
             val user1 = authService.currentUser()
             Log.i("Current User:", user1.toString())
             withContext(Dispatchers.Main) {
-                loggedInUser.value = newUser
+                loggedInUser = newUser
             }
         }
     }
@@ -70,7 +72,7 @@ class ProfileViewModel constructor(private val authService: AuthService) : ViewM
             val user = authService.currentUser()
 
             withContext(Dispatchers.Main) {
-                loggedInUser.value = user
+                loggedInUser = user
             }
         }
     }
