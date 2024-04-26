@@ -29,6 +29,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -49,20 +50,24 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavHostController
 import me.ppvan.meplace.MePlaceApplication
+import me.ppvan.meplace.Routes
 import me.ppvan.meplace.data.Schedule
 import me.ppvan.meplace.data.Destination
+import me.ppvan.meplace.data.Restaurant
 import me.ppvan.meplace.ui.component.BottomRoundedShape
 import me.ppvan.meplace.ui.component.CircleButton
 import me.ppvan.meplace.ui.component.ScheduleCard
 import me.ppvan.meplace.viewmodel.PlaceDetailsViewModel
 import me.ppvan.meplace.viewmodel.viewModelFactory
+import me.ppvan.meplace.ui.component.RestaurantCard
 
 @Composable
-fun PlaceDetailsView(id: Int, onBackPress: () -> Unit) {
+fun PlaceDetailsView(id: Int, onBackPress: () -> Unit, navigator: NavHostController) {
 
     val viewModel = viewModel<PlaceDetailsViewModel>(factory = viewModelFactory {
-        PlaceDetailsViewModel(MePlaceApplication.appModule.placeRepo)
+        PlaceDetailsViewModel(MePlaceApplication.appModule.resRepo, MePlaceApplication.appModule.placeRepo)
     })
     var destination by remember {
         mutableStateOf(Destination.default())
@@ -76,22 +81,30 @@ fun PlaceDetailsView(id: Int, onBackPress: () -> Unit) {
     LaunchedEffect(key1 = id) {
         destination = viewModel.getDetailById(id)
     }
-
-    Column(
+    Scaffold (
+        topBar = {
+            Header(
+                modifier = Modifier,
+                navigateBack = onBackPress,
+                isFavorite = isFavorite,
+                favoriteClick = {
+                    viewModel.updateFavoriteDestination(id)
+                }
+            )
+        }
+    ) {
+        innerPadding ->
+        Column(
         modifier = Modifier
             .fillMaxSize()
-            .statusBarsPadding()
+//            .statusBarsPadding(innerPadding)
+//            .padding(innerPadding)
             .verticalScroll(rememberScrollState())
     ) {
-
-        DetailHeader(
+            println(innerPadding)
+            DetailDestination(
             modifier = Modifier,
-            navigateBack = onBackPress,
             destination = destination,
-            isFavorite = isFavorite,
-            favoriteClick = {
-                viewModel.updateFavoriteDestination(id)
-            }
         )
         DetailContent(modifier = Modifier, destination = destination)
         DetailBookingNow(
@@ -105,6 +118,11 @@ fun PlaceDetailsView(id: Int, onBackPress: () -> Unit) {
         DetailPriceAndContinue(modifier = Modifier, subscribed = subscribed) {
             dialogVisible = true
         }
+
+        ResListRecommend(resList = viewModel.restaurants, modifier = Modifier){
+            navigator.navigate(Routes.Restaurant.name)
+        }
+
     }
 
     if (dialogVisible) {
@@ -117,6 +135,46 @@ fun PlaceDetailsView(id: Int, onBackPress: () -> Unit) {
         )
     }
 
+    }
+//    Column(
+//        modifier = Modifier
+//            .fillMaxSize()
+//            .statusBarsPadding()
+//            .verticalScroll(rememberScrollState())
+//    ) {
+//
+//        DetailHeader(
+//            modifier = Modifier,
+//            navigateBack = onBackPress,
+//            destination = destination,
+//            isFavorite = isFavorite,
+//            favoriteClick = {
+//                viewModel.updateFavoriteDestination(id)
+//            }
+//        )
+//        DetailContent(modifier = Modifier, destination = destination)
+//        DetailBookingNow(
+//            modifier = Modifier,
+//            listSchedule = destination.schedule,
+//            listSelectedSchedule = viewModel.listSelectedSchedule,
+//            onClickCard = {
+//                viewModel.updateScheduleDestination(it)
+//            }
+//        )
+//        DetailPriceAndContinue(modifier = Modifier, subscribed = subscribed) {
+//            dialogVisible = true
+//        }
+//    }
+//
+//    if (dialogVisible) {
+//        ConfirmAlertDialog(
+//            onDismissRequest = { dialogVisible = false },
+//            onConfirmation = { dialogVisible = false; viewModel.updateSubscribedState(id) },
+//            dialogTitle = "Xác nhận",
+//            dialogText = "Bạn chắc chắn muốn đăng ký place?",
+//            icon = Icons.Filled.Info
+//        )
+//    }
 }
 
 
@@ -270,12 +328,33 @@ fun DetailPriceAndContinue(modifier: Modifier, subscribed: Boolean, onClickButto
 }
 
 @Composable
-fun DetailHeader(
+fun Header(
     modifier: Modifier,
-    destination: Destination,
     isFavorite: Boolean,
     navigateBack: () -> Unit,
     favoriteClick: () -> Unit,
+) {
+    Row(
+        horizontalArrangement = Arrangement.SpaceBetween, modifier = modifier
+            .fillMaxWidth()
+            .padding(horizontal = 24.dp, vertical = 32.dp)
+    ) {
+        CircleButton(
+            modifier = modifier,
+            onClick = navigateBack,
+            icon = Icons.AutoMirrored.Filled.ArrowBack
+        )
+        CircleButton(
+            onClick = favoriteClick,
+            icon = if (isFavorite) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
+        )
+    }
+}
+
+@Composable
+fun DetailDestination(
+    modifier: Modifier,
+    destination: Destination,
 ) {
     Box {
         Image(
@@ -287,21 +366,6 @@ fun DetailHeader(
                 .height(305.dp)
                 .clip(shape = BottomRoundedShape())
         )
-        Row(
-            horizontalArrangement = Arrangement.SpaceBetween, modifier = modifier
-                .fillMaxWidth()
-                .padding(horizontal = 24.dp, vertical = 32.dp)
-        ) {
-            CircleButton(
-                modifier = modifier,
-                onClick = navigateBack,
-                icon = Icons.AutoMirrored.Filled.ArrowBack
-            )
-            CircleButton(
-                onClick = favoriteClick,
-                icon = if (isFavorite) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
-            )
-        }
     }
 }
 
@@ -347,11 +411,38 @@ fun ConfirmAlertDialog(
     )
 }
 
-
-@Preview
 @Composable
-fun PlaceDetailPreview() {
-    PlaceDetailsView(id = 0) {
-        Log.d("INFO", "Back")
-    }
+fun ResListRecommend(
+    resList: List<Restaurant>,
+    modifier: Modifier,
+    navigateToDetail: (Int) -> Unit
+) {
+    Text(
+        text = "Nhà hàng gợi ý",
+        fontSize = 18.sp,
+//        color = BlackColor500, fontFamily = poppinsFamily,
+        fontWeight = FontWeight.SemiBold,
+        modifier = modifier.padding(start = 24.dp, top = 30.dp, end = 24.dp, bottom = 16.dp)
+    )
+    LazyRow(
+        horizontalArrangement = Arrangement.spacedBy(24.dp),
+        contentPadding = PaddingValues(horizontal = 24.dp),
+        content = {
+            items(resList.size) {index ->
+                RestaurantCard(
+                    restaurant = resList[index],
+                    modifier = modifier,
+                    onClickCard = {navigateToDetail(resList[index].id)}
+                )
+            }
+        }
+    )
 }
+
+//@Preview
+//@Composable
+//fun PlaceDetailPreview() {
+//    PlaceDetailsView(id = 1, onBackPress = {} ) {
+//        Log.d("INFO", "Back")
+//    }
+//}

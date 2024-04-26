@@ -11,19 +11,35 @@ import me.ppvan.meplace.EventBus
 import me.ppvan.meplace.MeplaceEvent
 import me.ppvan.meplace.data.Schedule
 import me.ppvan.meplace.data.Destination
+import me.ppvan.meplace.data.Restaurant
 import me.ppvan.meplace.repository.DestinationRepository
+import me.ppvan.meplace.repository.RestaurantRepository
 
 
-class PlaceDetailsViewModel constructor(private val repository: DestinationRepository) : ViewModel() {
+class PlaceDetailsViewModel constructor(private val resRepository: RestaurantRepository, private val desRepository:DestinationRepository) : ViewModel() {
     val favorite = mutableStateOf(false)
     val subscribed = mutableStateOf(false)
+    val restaurants = mutableStateListOf<Restaurant>()
+
+    init {
+        loadResData()
+    }
+    private fun loadResData() {
+            viewModelScope.launch(Dispatchers.IO) {
+                val temp1 = resRepository.findRestaurants()
+
+                withContext(Dispatchers.Main) {
+                    restaurants.addAll(temp1)
+                }
+            }
+    }
 
     private val _listSelectedSchedule = mutableStateListOf<Int>()
     val listSelectedSchedule: List<Int> get() = _listSelectedSchedule
 
     fun updateFavoriteDestination(id: Int): String {
         viewModelScope.launch {
-            repository.updateFavoriteDestination(id)
+            desRepository.updateFavoriteDestination(id)
             isFavoriteDestination(id)
             EventBus.produceEvent(MeplaceEvent.FAVORITE_CHANGED)
         }
@@ -41,7 +57,7 @@ class PlaceDetailsViewModel constructor(private val repository: DestinationRepos
 
     private fun isFavoriteDestination(id: Int) {
         viewModelScope.launch {
-            val result = repository.findDestinationById(id)
+            val result = desRepository.findDestinationById(id)
             favorite.value = result.isFavorite
         }
     }
@@ -49,7 +65,7 @@ class PlaceDetailsViewModel constructor(private val repository: DestinationRepos
     fun updateSubscribedState(id: Int) {
         subscribed.value = !subscribed.value
         viewModelScope.launch {
-            val result = repository.findDestinationById(id)
+            val result = desRepository.findDestinationById(id)
             result.isSubscribed = subscribed.value
             EventBus.produceEvent(MeplaceEvent.SUBSCRIBED_CHANGED)
         }
@@ -57,7 +73,7 @@ class PlaceDetailsViewModel constructor(private val repository: DestinationRepos
 
     suspend fun getDetailById(id: Int): Destination {
         return withContext(Dispatchers.IO) {
-            return@withContext repository.findDestinationById(id)
+            return@withContext desRepository.findDestinationById(id)
         }
     }
 

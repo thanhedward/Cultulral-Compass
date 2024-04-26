@@ -30,6 +30,7 @@ import me.ppvan.meplace.viewmodel.RegisterViewModel
 import me.ppvan.meplace.viewmodel.PlaceViewModel
 import me.ppvan.meplace.viewmodel.viewModelFactory
 import me.ppvan.meplace.ui.view.QuizGame.QuizGameView
+import me.ppvan.meplace.ui.view.RestaurantDetailView
 import me.ppvan.meplace.viewmodel.GameViewModel
 
 class MainActivity : ComponentActivity() {
@@ -97,10 +98,25 @@ fun MePlaceApp() {
                     it.getString("id", "1")
                 }
             }
-            PlaceDetailsView(id = id.toInt()) {
-                navigator.popBackStack()
-            }
+            PlaceDetailsView(id = id.toInt(), onBackPress = {navigator.popBackStack()}, navigator)
+
+
         }
+        composable(
+            route = "${Routes.Restaurant.name}/{id}"
+        ) { backStackEntry ->
+            val id = backStackEntry.arguments.let {
+                if (it == null) {
+                    "1"
+                } else {
+                    it.getString("id", "1")
+                }
+            }
+            println(id)
+            RestaurantDetailView(id = id.toInt(), onBackPress = {navigator.popBackStack()})
+
+        }
+
         composable(route = Routes.Register.name) {
             RegisterView(
                 state = registerViewModel.state.value,
@@ -152,7 +168,7 @@ fun MePlaceApp() {
 }
 
 enum class Routes {
-    Home, Place, Register, Login, QuizGame, MemoryGame, ChangePass
+    Home, Place, Register, Login, QuizGame, MemoryGame, ChangePass, Restaurant
 }
 
 @Preview(showBackground = true)

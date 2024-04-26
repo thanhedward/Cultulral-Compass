@@ -8,8 +8,11 @@ import me.ppvan.meplace.repository.AuthService
 import me.ppvan.meplace.repository.RoomAuthService
 import me.ppvan.meplace.repository.RoomDestinationRepository
 import me.ppvan.meplace.repository.DestinationRepository
+import me.ppvan.meplace.repository.RestaurantRepository
+import me.ppvan.meplace.repository.RoomRestaurantRepository
 
 interface AppModule {
+    val resRepo: RestaurantRepository
     val placeRepo: DestinationRepository
     val authService: AuthService
     val miniGameService: AppMiniGameService
@@ -21,6 +24,10 @@ class AppModuleImpl(appContext: Context) : AppModule {
         appContext,
         MePlaceDatabase::class.java, "meplace-db"
     ).build()
+
+    override val resRepo: RestaurantRepository by lazy {
+        RoomRestaurantRepository()
+    }
 
     override val placeRepo: DestinationRepository by lazy {
         RoomDestinationRepository(database.userDao())
