@@ -29,12 +29,12 @@ import me.ppvan.meplace.R
 import me.ppvan.meplace.data.Restaurant
 
 @Composable
-fun RestaurantCard(restaurant: Restaurant, modifier: Modifier = Modifier, onClickCard: () -> Unit) {
+fun RestaurantCard(restaurant: Restaurant, modifier: Modifier = Modifier, onClickCard: (Int) -> Unit) {
     ElevatedCard {
         Column(
             modifier = modifier
                 .clip(RoundedCornerShape(18.dp))
-                .clickable { onClickCard() }) {
+                .clickable { onClickCard(restaurant.id) }) {
             Box(contentAlignment = Alignment.TopEnd, modifier = modifier.padding(10.dp)) {
                 Image(
                     painter = painterResource(id = restaurant.picture),
