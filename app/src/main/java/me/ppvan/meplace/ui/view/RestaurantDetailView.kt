@@ -151,6 +151,6 @@ fun DetailResContent(modifier: Modifier, restaurant: Restaurant) {
 @Composable
 fun ResDetailPreview() {
     RestaurantDetailView(id = 1) {
-        Log.d("INFO", "Back")
+
     }
 }   

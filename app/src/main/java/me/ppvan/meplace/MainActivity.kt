@@ -98,9 +98,13 @@ fun MePlaceApp() {
                     it.getString("id", "1")
                 }
             }
-            PlaceDetailsView(id = id.toInt(), onBackPress = {navigator.popBackStack()}, navigator)
-
-
+            PlaceDetailsView(
+                id = id.toInt(),
+                onBackPress = {navigator.popBackStack()},
+                navigateToDetail = {
+                    id -> navigator.navigate("${Routes.Restaurant.name}/${id}")
+                }
+            )
         }
         composable(
             route = "${Routes.Restaurant.name}/{id}"
@@ -112,8 +116,9 @@ fun MePlaceApp() {
                     it.getString("id", "1")
                 }
             }
-            println(id)
-            RestaurantDetailView(id = id.toInt(), onBackPress = {navigator.popBackStack()})
+            RestaurantDetailView(id = id.toInt()){
+                navigator.popBackStack()
+            }
 
         }
 

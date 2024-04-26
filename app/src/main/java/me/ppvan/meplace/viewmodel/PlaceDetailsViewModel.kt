@@ -76,5 +76,9 @@ class PlaceDetailsViewModel constructor(private val resRepository: RestaurantRep
             return@withContext desRepository.findDestinationById(id)
         }
     }
-
+    suspend fun getResDetailById(id: Int): Restaurant {
+        return withContext(Dispatchers.IO) {
+            return@withContext resRepository.findRestaurantById(id);
+        }
+    }
 }

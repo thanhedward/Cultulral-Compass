@@ -62,16 +62,23 @@ import me.ppvan.meplace.ui.component.ScheduleCard
 import me.ppvan.meplace.viewmodel.PlaceDetailsViewModel
 import me.ppvan.meplace.viewmodel.viewModelFactory
 import me.ppvan.meplace.ui.component.RestaurantCard
+import me.ppvan.meplace.viewmodel.RestaurantDetailsViewModel
 
 @Composable
-fun PlaceDetailsView(id: Int, onBackPress: () -> Unit, navigator: NavHostController) {
+fun PlaceDetailsView(id: Int, onBackPress: () -> Unit, navigateToDetail: (Int) -> Unit) {
 
     val viewModel = viewModel<PlaceDetailsViewModel>(factory = viewModelFactory {
         PlaceDetailsViewModel(MePlaceApplication.appModule.resRepo, MePlaceApplication.appModule.placeRepo)
     })
+
     var destination by remember {
         mutableStateOf(Destination.default())
     }
+
+    var restaurant by remember {
+        mutableStateOf(Restaurant.default())
+    }
+
     var dialogVisible by remember {
         mutableStateOf(false)
     }
@@ -80,6 +87,7 @@ fun PlaceDetailsView(id: Int, onBackPress: () -> Unit, navigator: NavHostControl
 
     LaunchedEffect(key1 = id) {
         destination = viewModel.getDetailById(id)
+        restaurant = viewModel.getResDetailById(id)
     }
     Scaffold (
         topBar = {
@@ -119,10 +127,7 @@ fun PlaceDetailsView(id: Int, onBackPress: () -> Unit, navigator: NavHostControl
             dialogVisible = true
         }
 
-        ResListRecommend(resList = viewModel.restaurants, modifier = Modifier){
-            navigator.navigate(Routes.Restaurant.name)
-        }
-
+        ResListRecommend(resList = viewModel.restaurants, modifier = Modifier, navigateToDetail)
     }
 
     if (dialogVisible) {
@@ -432,17 +437,10 @@ fun ResListRecommend(
                 RestaurantCard(
                     restaurant = resList[index],
                     modifier = modifier,
-                    onClickCard = {navigateToDetail(resList[index].id)}
+                    onClickCard = navigateToDetail
                 )
             }
         }
     )
 }
 
-//@Preview
-//@Composable
-//fun PlaceDetailPreview() {
-//    PlaceDetailsView(id = 1, onBackPress = {} ) {
-//        Log.d("INFO", "Back")
-//    }
-//}
