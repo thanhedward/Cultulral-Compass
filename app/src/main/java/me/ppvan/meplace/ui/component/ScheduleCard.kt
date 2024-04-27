@@ -28,6 +28,8 @@ fun ScheduleCard(
     isSelected: Boolean,
     onCardClick: (Schedule) -> Unit
 ) {
+
+
     Column(
         modifier = modifier
             .clip(RoundedCornerShape(22.dp))

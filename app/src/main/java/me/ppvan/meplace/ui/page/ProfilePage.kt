@@ -662,7 +662,7 @@ fun ProfileEditPassPage(
                 value = newPassword,
                 onValueChange = { newPassword = it },
                 label = { Text(text = "Mật khẩu mới") },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email)
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text)
             )
             Spacer(modifier = Modifier.height(5.dp))
             OutlinedTextField(
@@ -674,7 +674,7 @@ fun ProfileEditPassPage(
                     passwordMismatch = it != newPassword
                 },
                 label = { Text(text = "Nhập lại mật khẩu mới") },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text)
             )
 
             // Hiển thị thông báo nếu mật khẩu không trùng khớp

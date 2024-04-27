@@ -2,6 +2,8 @@ package me.ppvan.meplace.ui.page
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -13,6 +15,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
@@ -30,6 +34,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import me.ppvan.meplace.data.Destination
@@ -41,17 +46,17 @@ import me.ppvan.meplace.ui.utils.noRippleClickable
 import me.ppvan.meplace.viewmodel.HomeStates
 import me.ppvan.meplace.viewmodel.HomeViewModel
 import me.ppvan.meplace.R
+import me.ppvan.meplace.ui.component.RecommendationGrid
 
 @Composable
 fun HomePage(viewModel: HomeViewModel, user: User, navigateToDetail: (Int) -> Unit) {
 
     Column(
         modifier = Modifier
-            .fillMaxSize()
             .background(MaterialTheme.colorScheme.surface)
             .verticalScroll(rememberScrollState())
     ) {
-        HomeHeader(user = user, navigateToAboutMe = {})
+
         when (viewModel.state.value) {
             HomeStates.Loading -> {
                 Text(text = "Loading")
@@ -63,10 +68,14 @@ fun HomePage(viewModel: HomeViewModel, user: User, navigateToDetail: (Int) -> Un
                     recommendations = viewModel.recommendations,
                     modifier = Modifier,
                     navigateToDetail = navigateToDetail,
+                    user
                 )
+
             }
         }
+
     }
+
 }
 
 
@@ -76,8 +85,10 @@ fun HomeContent(
     populars: List<Destination>,
     recommendations: List<Destination>,
     modifier: Modifier,
-    navigateToDetail: (Int) -> Unit
+    navigateToDetail: (Int) -> Unit,
+    user: User
 ) {
+    HomeHeader(user = user, navigateToAboutMe = {})
     LazyRow(
         horizontalArrangement = Arrangement.spacedBy(24.dp),
         contentPadding = PaddingValues(horizontal = 24.dp),
@@ -98,24 +109,25 @@ fun HomeContent(
         fontWeight = FontWeight.SemiBold,
         modifier = modifier.padding(start = 24.dp, top = 30.dp, end = 24.dp, bottom = 16.dp)
     )
-    LazyColumn(
+    Column(
         verticalArrangement = Arrangement.spacedBy(16.dp),
-        contentPadding = PaddingValues(start = 24.dp, end = 24.dp, bottom = 30.dp),
         modifier = modifier
-            .height(500.dp)
+            .padding(start = 24.dp, end = 24.dp, bottom = 30.dp)
             .nestedScroll(
                 object : NestedScrollConnection {
                     // Implement callbacks here
                 }),
         content = {
-            items(recommendations.size) { index ->
+            recommendations.forEach {
                 RecommendationCard(
                     modifier = modifier,
-                    destination = recommendations[index],
-                    onClickCard = { navigateToDetail(recommendations[index].id) }
+                    destination = it,
+                    onClickCard = { navigateToDetail(it.id) }
                 )
-            }
-        })
+            }}
+            )
+
+
 }
 
 @Composable
@@ -129,7 +141,7 @@ fun HomeHeader(modifier: Modifier = Modifier, user: User, navigateToAboutMe: () 
     ) {
         Column {
             Text(
-                text = "Xin chào,\n${user.username}",
+                text = "Xin chào,\n${user.fullName}",
                 lineHeight = 36.sp,
                 color = MaterialTheme.colorScheme.onBackground,
                 fontSize = 24.sp,

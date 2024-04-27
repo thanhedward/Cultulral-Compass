@@ -24,10 +24,6 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.navigation.NavHostController
@@ -52,18 +48,18 @@ fun HomeView(
     libraryViewModel: LibraryViewModel,
     profileViewModel: ProfileViewModel,
     gameViewModel: GameViewModel,
-    navigateToDetails: (Int) -> Unit
+    navigateToDetails: (Int) -> Unit,
+    selectedPage: PlacePages,
+    updateSelectedPage: (PlacePages) -> Unit
 ) {
 
-    var selectedPage by remember {
-        mutableStateOf(PlacePages.Home)
-    }
+
 
     Scaffold(
         bottomBar = {
             MePlaceNavigationBar(
                 selectedPage = selectedPage,
-                onPageSelected = { selectedPage = it }
+                onPageSelected = updateSelectedPage
             )
         },
         contentWindowInsets = WindowInsets(0, 0, 0, 0)

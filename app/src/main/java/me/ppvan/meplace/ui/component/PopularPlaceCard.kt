@@ -47,39 +47,15 @@ fun PopularPlaceCard(destination: Destination, modifier: Modifier = Modifier, on
                         .width(240.dp)
                         .clip(RoundedCornerShape(18.dp))
                 )
-//                Card(
-//                    shape = RoundedCornerShape(bottomStart = 18.dp),
-//                ) {
-//                    Row(
-//                        verticalAlignment = Alignment.CenterVertically,
-//                        modifier = modifier
-////                        .background(color = WhiteColor)
-//                            .height(30.dp)
-//                            .padding(bottom = 4.dp, end = 2.dp, start = 5.5.dp)
-//
-//                    ) {
-//                        Image(
-//                            painter = painterResource(id = R.drawable.icon_star),
-//                            modifier = modifier.size(16.dp),
-//                            contentDescription = ""
-//                        )
-//                        Spacer(modifier = modifier.width(4.dp))
-//                        Text(
-//                            text = destination.rate,
-//                            fontSize = 14.sp,
-////                        fontFamily = poppinsFamily,
-//                            fontWeight = FontWeight.SemiBold
-//                        )
-//                    }
-//                }
+
             }
             Column(modifier = modifier.padding(start = 20.dp, end = 20.dp, bottom = 20.dp)) {
                 Text(
                     text = destination.name,
-//                fontFamily = poppinsFamily,
+
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Medium,
-//                color = BlackColor500
+//                  color = BlackColor500
                 )
                 Spacer(modifier = Modifier.height(5.dp))
                 Text(

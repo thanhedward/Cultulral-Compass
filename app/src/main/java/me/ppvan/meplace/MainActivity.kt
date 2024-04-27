@@ -7,6 +7,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.view.WindowCompat
@@ -22,6 +26,7 @@ import me.ppvan.meplace.ui.view.MemoryGame.MemoryGame
 import me.ppvan.meplace.ui.view.MemoryGame.MemoryGameViewModel
 import me.ppvan.meplace.ui.view.RegisterView
 import me.ppvan.meplace.ui.view.PlaceDetailsView
+import me.ppvan.meplace.ui.view.PlacePages
 import me.ppvan.meplace.viewmodel.HomeViewModel
 import me.ppvan.meplace.viewmodel.LibraryViewModel
 import me.ppvan.meplace.viewmodel.LoginViewModel
@@ -80,13 +85,21 @@ fun MePlaceApp() {
         GameViewModel(MePlaceApplication.appModule.miniGameService)
     })
 
+    var selectedPage by remember {
+        mutableStateOf(PlacePages.Home)
+    }
+    fun updateSelectedTab(newTab: PlacePages) {
+        selectedPage = newTab
+    }
+
     val memoryGameViewModel = viewModel<MemoryGameViewModel>()
 
-    NavHost(navController = navigator, startDestination = Routes.Login.name) {
+    NavHost(navController = navigator, startDestination = Routes.Home.name) {
         composable(route = Routes.Home.name) {
             HomeView(
                 navigator, homeViewModel, placeViewModel, libraryViewModel, profileViewModel, gameViewModel,
-                navigateToDetails = { id -> navigator.navigate("${Routes.Place.name}/${id}") })
+                navigateToDetails = { id -> navigator.navigate("${Routes.Place.name}/${id}") }, selectedPage, { newTab -> updateSelectedTab(newTab) })
+
         }
         composable(
             route = "${Routes.Place.name}/{id}"
