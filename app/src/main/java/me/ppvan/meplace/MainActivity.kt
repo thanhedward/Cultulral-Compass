@@ -92,13 +92,17 @@ fun MePlaceApp() {
         selectedPage = newTab
     }
 
+    fun navigateToAboutMe() {
+        selectedPage = PlacePages.Profile
+    }
+
     val memoryGameViewModel = viewModel<MemoryGameViewModel>()
 
     NavHost(navController = navigator, startDestination = Routes.Home.name) {
         composable(route = Routes.Home.name) {
             HomeView(
                 navigator, homeViewModel, placeViewModel, libraryViewModel, profileViewModel, gameViewModel,
-                navigateToDetails = { id -> navigator.navigate("${Routes.Place.name}/${id}") }, selectedPage, { newTab -> updateSelectedTab(newTab) })
+                navigateToDetails = { id -> navigator.navigate("${Routes.Place.name}/${id}") }, selectedPage, { newTab -> updateSelectedTab(newTab) }, {navigateToAboutMe()})
 
         }
         composable(

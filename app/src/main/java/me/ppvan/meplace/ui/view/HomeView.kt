@@ -50,7 +50,8 @@ fun HomeView(
     gameViewModel: GameViewModel,
     navigateToDetails: (Int) -> Unit,
     selectedPage: PlacePages,
-    updateSelectedPage: (PlacePages) -> Unit
+    updateSelectedPage: (PlacePages) -> Unit,
+    navigateToAboutMe: () -> Unit
 ) {
 
 
@@ -83,7 +84,8 @@ fun HomeView(
                 PlacePages.Home -> HomePage(
                     homeViewModel,
                     profileViewModel.loggedInUser,
-                    navigateToDetails
+                    navigateToDetails,
+                    navigateToAboutMe
                 )
 
                 PlacePages.Place -> PlacePage(placeViewModel, navigateToDetails)

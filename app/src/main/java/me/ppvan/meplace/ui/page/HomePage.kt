@@ -2,21 +2,15 @@ package me.ppvan.meplace.ui.page
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
@@ -34,7 +28,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import me.ppvan.meplace.data.Destination
@@ -46,10 +39,10 @@ import me.ppvan.meplace.ui.utils.noRippleClickable
 import me.ppvan.meplace.viewmodel.HomeStates
 import me.ppvan.meplace.viewmodel.HomeViewModel
 import me.ppvan.meplace.R
-import me.ppvan.meplace.ui.component.RecommendationGrid
+import me.ppvan.meplace.ui.view.PlacePages
 
 @Composable
-fun HomePage(viewModel: HomeViewModel, user: User, navigateToDetail: (Int) -> Unit) {
+fun HomePage(viewModel: HomeViewModel, user: User, navigateToDetail: (Int) -> Unit, navigateToAboutMe: () -> Unit) {
 
     Column(
         modifier = Modifier
@@ -68,7 +61,8 @@ fun HomePage(viewModel: HomeViewModel, user: User, navigateToDetail: (Int) -> Un
                     recommendations = viewModel.recommendations,
                     modifier = Modifier,
                     navigateToDetail = navigateToDetail,
-                    user
+                    user,
+                    navigateToAboutMe
                 )
 
             }
@@ -86,9 +80,10 @@ fun HomeContent(
     recommendations: List<Destination>,
     modifier: Modifier,
     navigateToDetail: (Int) -> Unit,
-    user: User
+    user: User,
+    navigateToAboutMe: () -> Unit
 ) {
-    HomeHeader(user = user, navigateToAboutMe = {})
+    HomeHeader(user = user, navigateToAboutMe = navigateToAboutMe)
     LazyRow(
         horizontalArrangement = Arrangement.spacedBy(24.dp),
         contentPadding = PaddingValues(horizontal = 24.dp),
@@ -163,7 +158,7 @@ fun HomeHeader(modifier: Modifier = Modifier, user: User, navigateToAboutMe: () 
             contentScale = ContentScale.Crop,
             modifier = Modifier
                 .noRippleClickable {
-                    navigateToAboutMe()
+                     navigateToAboutMe()
                 }
                 .padding(top = 6.dp)
                 .size(60.dp)
