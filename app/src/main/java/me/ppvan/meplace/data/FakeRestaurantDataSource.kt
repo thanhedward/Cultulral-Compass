@@ -1,7 +1,10 @@
 package me.ppvan.meplace.data
 
 import me.ppvan.meplace.R
-object FakeRestaurantDataSource {
+object
+
+
+FakeRestaurantDataSource {
     val dummyRestaurant = listOf(
         Restaurant(
             id=1,
