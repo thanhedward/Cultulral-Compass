@@ -100,7 +100,7 @@ fun LoginView(
                     isPasswordTextField = false,
                     keyboardOption = KeyboardOptions(keyboardType = KeyboardType.Text)
                 )
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(2.dp))
                 CommonTextField(
                     text = password,
                     placeholder = "Mật khẩu",
@@ -111,9 +111,9 @@ fun LoginView(
                         imeAction = ImeAction.Done
                     )
                 )
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(10.dp))
 
-                Spacer(modifier = Modifier.height(20.dp))
+
                 CommonLoginButton(
                     text = "Đăng nhập",
                     enable = formValid,

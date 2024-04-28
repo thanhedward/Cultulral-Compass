@@ -13,6 +13,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import me.ppvan.meplace.Routes
 import me.ppvan.meplace.ui.component.RecommendationGrid
@@ -33,7 +35,11 @@ fun RecommendationView(
         modifier = Modifier.fillMaxSize(),
         topBar = {
             CenterAlignedTopAppBar(
-                title = { Text(text = "Danh sách địa danh") },
+                title = { Text(
+                    text = "Danh sách địa danh",
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.SemiBold
+                ) },
                 navigationIcon = {
                     IconButton(
                         onClick = { navigator.popBackStack()  }
