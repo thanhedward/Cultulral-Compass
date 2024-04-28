@@ -173,7 +173,7 @@ fun HomeContent(
                                         navigator.navigate(Routes.Recommendation.name)
                                     }
                                 ))
-                         {
+                        {
                             Text(
                                 text = "Khám phá ngay",
                                 modifier = Modifier.padding(7.dp),

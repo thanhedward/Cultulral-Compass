@@ -3,6 +3,7 @@ package me.ppvan.meplace.ui.component
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -95,8 +96,8 @@ fun CommonTextField(
         colors = OutlinedTextFieldDefaults.colors(
             focusedBorderColor = if (valid) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.error,
         ),
-        shape = RoundedCornerShape(15.dp),
-        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(5.dp),
+        modifier = Modifier.fillMaxWidth().padding(4.dp),
         visualTransformation = if (isPasswordTextField and !passwordVisible) PasswordVisualTransformation()
         else VisualTransformation.None,
         keyboardOptions = keyboardOption,
