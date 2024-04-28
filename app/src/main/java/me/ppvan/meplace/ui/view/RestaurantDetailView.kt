@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -75,7 +76,7 @@ fun RestaurantDetailView(id: Int, onBackPress:() -> Unit) {
             .fillMaxSize()
             .verticalScroll(rememberScrollState())        
     ) {
-        DetailResHeader(modifier = Modifier, restaurant = restaurant, navigateBack = onBackPress)
+        DetailResHeader(modifier = Modifier.systemBarsPadding(), restaurant = restaurant, navigateBack = onBackPress)
         DetailResContent(modifier = Modifier, restaurant = restaurant)
     }
 }
