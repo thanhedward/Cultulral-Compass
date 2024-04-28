@@ -90,31 +90,29 @@ fun PlaceDetailsView(id: Int, onBackPress: () -> Unit, navigateToDetail: (Int) -
         destination = viewModel.getDetailById(id)
         restaurant = viewModel.getResDetailById(id)
     }
-    Scaffold (
-        topBar = {
-            Header(
-                modifier = Modifier.systemBarsPadding(),
-                navigateBack = onBackPress,
-                isFavorite = isFavorite,
-                favoriteClick = {
-                    viewModel.updateFavoriteDestination(id)
-                }
-            )
-        }
-    ) {
+    Scaffold  {
         innerPadding ->
         Column(
         modifier = Modifier
             .fillMaxSize()
-//            .statusBarsPadding(innerPadding)
-//            .padding(innerPadding)
+            .padding(innerPadding)
             .verticalScroll(rememberScrollState())
     ) {
-            println(innerPadding)
-            DetailDestination(
-            modifier = Modifier,
-            destination = destination,
-        )
+            Box(modifier = Modifier){
+
+                DetailDestination(
+                    modifier = Modifier,
+                    destination = destination,
+                )
+                Header(
+                    modifier = Modifier,
+                    navigateBack = onBackPress,
+                    isFavorite = isFavorite,
+                    favoriteClick = {
+                        viewModel.updateFavoriteDestination(id)
+                    }
+                )
+            }
         DetailContent(modifier = Modifier, destination = destination)
         DetailBookingNow(
             modifier = Modifier,
@@ -142,45 +140,7 @@ fun PlaceDetailsView(id: Int, onBackPress: () -> Unit, navigateToDetail: (Int) -
     }
 
     }
-//    Column(
-//        modifier = Modifier
-//            .fillMaxSize()
-//            .statusBarsPadding()
-//            .verticalScroll(rememberScrollState())
-//    ) {
-//
-//        DetailHeader(
-//            modifier = Modifier,
-//            navigateBack = onBackPress,
-//            destination = destination,
-//            isFavorite = isFavorite,
-//            favoriteClick = {
-//                viewModel.updateFavoriteDestination(id)
-//            }
-//        )
-//        DetailContent(modifier = Modifier, destination = destination)
-//        DetailBookingNow(
-//            modifier = Modifier,
-//            listSchedule = destination.schedule,
-//            listSelectedSchedule = viewModel.listSelectedSchedule,
-//            onClickCard = {
-//                viewModel.updateScheduleDestination(it)
-//            }
-//        )
-//        DetailPriceAndContinue(modifier = Modifier, subscribed = subscribed) {
-//            dialogVisible = true
-//        }
-//    }
-//
-//    if (dialogVisible) {
-//        ConfirmAlertDialog(
-//            onDismissRequest = { dialogVisible = false },
-//            onConfirmation = { dialogVisible = false; viewModel.updateSubscribedState(id) },
-//            dialogTitle = "Xác nhận",
-//            dialogText = "Bạn chắc chắn muốn đăng ký place?",
-//            icon = Icons.Filled.Info
-//        )
-//    }
+
 }
 
 
@@ -343,7 +303,7 @@ fun Header(
     Row(
         horizontalArrangement = Arrangement.SpaceBetween, modifier = modifier
             .fillMaxWidth()
-            .padding(horizontal = 24.dp, vertical = 32.dp)
+            .padding(horizontal = 20.dp, vertical = 20.dp)
     ) {
         CircleButton(
             modifier = modifier,
