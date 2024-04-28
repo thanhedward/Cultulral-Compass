@@ -33,7 +33,7 @@ import me.ppvan.meplace.R
 import me.ppvan.meplace.data.Destination
 
 @Composable
-fun RecommendationCard(modifier: Modifier, destination: Destination, onClickCard: () -> Unit) {
+fun RecommendationCard(modifier: Modifier, destination: Destination, onClickCard: (Int) -> Unit) {
     SquareGrooveTile(
         image = ImageRequest.Builder(LocalContext.current)
             .data(data = destination.picture)
@@ -49,6 +49,10 @@ fun RecommendationCard(modifier: Modifier, destination: Destination, onClickCard
                 overflow = TextOverflow.Ellipsis,
             )
         },
-        onClick = onClickCard
+        onClick = {
+            onClickCard(destination.id)
+        }
     )
 }
+
+

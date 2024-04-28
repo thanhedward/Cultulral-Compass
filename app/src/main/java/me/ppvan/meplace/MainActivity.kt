@@ -35,8 +35,10 @@ import me.ppvan.meplace.viewmodel.RegisterViewModel
 import me.ppvan.meplace.viewmodel.PlaceViewModel
 import me.ppvan.meplace.viewmodel.viewModelFactory
 import me.ppvan.meplace.ui.view.QuizGame.QuizGameView
+import me.ppvan.meplace.ui.view.RecommendationView
 import me.ppvan.meplace.ui.view.RestaurantDetailView
 import me.ppvan.meplace.viewmodel.GameViewModel
+import java.nio.file.WatchEvent
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -92,6 +94,11 @@ fun MePlaceApp() {
         selectedPage = newTab
     }
 
+    fun updateSelectedTabOtherTab(newTab: PlacePages) {
+        navigator.navigate(Routes.Home.name)
+        selectedPage = newTab
+    }
+
     fun navigateToAboutMe() {
         selectedPage = PlacePages.Profile
     }
@@ -104,6 +111,15 @@ fun MePlaceApp() {
                 navigator, homeViewModel, placeViewModel, libraryViewModel, profileViewModel, gameViewModel,
                 navigateToDetails = { id -> navigator.navigate("${Routes.Place.name}/${id}") }, selectedPage, { newTab -> updateSelectedTab(newTab) }, {navigateToAboutMe()})
 
+        }
+        composable(route = Routes.Recommendation.name){
+            RecommendationView(
+                viewModel = homeViewModel,
+                selectedPage = selectedPage,
+                updateSelectedPage = { newTab -> updateSelectedTabOtherTab(newTab) },
+                navigator,
+                { id -> navigator.navigate("${Routes.Place.name}/${id}") },
+            )
         }
         composable(
             route = "${Routes.Place.name}/{id}"
@@ -190,7 +206,7 @@ fun MePlaceApp() {
 }
 
 enum class Routes {
-    Home, Place, Register, Login, QuizGame, MemoryGame, ChangePass, Restaurant
+    Home, Place, Register, Login, QuizGame, MemoryGame, ChangePass, Restaurant, Recommendation
 }
 
 @Preview(showBackground = true)

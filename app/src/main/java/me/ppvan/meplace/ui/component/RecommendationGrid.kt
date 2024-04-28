@@ -13,7 +13,7 @@ import me.ppvan.meplace.data.Destination
 @Composable
 fun RecommendationGrid(
     modifier: Modifier,
-    navigateToDetail: () -> Unit,
+    navigateToDetail: (Int) -> Unit,
     recommendations: List<Destination>,
 ) {
     ResponsiveGrid {

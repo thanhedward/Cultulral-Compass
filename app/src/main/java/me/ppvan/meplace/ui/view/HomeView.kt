@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
@@ -18,7 +19,10 @@ import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.Place
 import androidx.compose.material.icons.outlined.VideogameAsset
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
@@ -40,6 +44,7 @@ import me.ppvan.meplace.viewmodel.PlaceViewModel
 import me.ppvan.moon.utils.SlideTransition
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeView(
     navController: NavHostController,
@@ -54,9 +59,8 @@ fun HomeView(
     navigateToAboutMe: () -> Unit
 ) {
 
-
-
     Scaffold(
+
         bottomBar = {
             MePlaceNavigationBar(
                 selectedPage = selectedPage,
@@ -85,7 +89,8 @@ fun HomeView(
                     homeViewModel,
                     profileViewModel.loggedInUser,
                     navigateToDetails,
-                    navigateToAboutMe
+                    navigateToAboutMe,
+                    navController
                 )
 
                 PlacePages.Place -> PlacePage(placeViewModel, navigateToDetails)
@@ -102,7 +107,6 @@ fun HomeView(
 fun MePlaceNavigationBar(
     selectedPage: PlacePages,
     onPageSelected: (PlacePages) -> Unit
-
 ) {
 
     NavigationBar {
