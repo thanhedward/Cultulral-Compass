@@ -227,7 +227,7 @@ fun HomeHeader(modifier: Modifier = Modifier, user: User, navigateToAboutMe: () 
                     navigateToAboutMe()
                 }
                 .padding(top = 6.dp)
-                .size(60.dp)
+                .size(90.dp)
                 .clip(shape = CircleShape),
             contentDescription = stringResource(id = R.string.app_name),
         )
