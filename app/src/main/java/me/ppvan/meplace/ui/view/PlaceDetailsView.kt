@@ -35,6 +35,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -62,7 +63,9 @@ import me.ppvan.meplace.ui.component.ScheduleCard
 import me.ppvan.meplace.viewmodel.PlaceDetailsViewModel
 import me.ppvan.meplace.viewmodel.viewModelFactory
 import me.ppvan.meplace.ui.component.RestaurantCard
+
 import me.ppvan.meplace.viewmodel.RestaurantDetailsViewModel
+import me.ppvan.meplace.ui.component.UserRatingBar
 
 @Composable
 fun PlaceDetailsView(id: Int, onBackPress: () -> Unit, navigateToDetail: (Int) -> Unit) {
@@ -127,7 +130,19 @@ fun PlaceDetailsView(id: Int, onBackPress: () -> Unit, navigateToDetail: (Int) -
             dialogVisible = true
         }
 
+
         ResListRecommend(resList = viewModel.restaurants, modifier = Modifier, navigateToDetail)
+
+
+        val ratingState = remember { mutableIntStateOf(0) }
+        Column(
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                UserRatingBar(ratingState = ratingState)
+            }
+
     }
 
     if (dialogVisible) {
