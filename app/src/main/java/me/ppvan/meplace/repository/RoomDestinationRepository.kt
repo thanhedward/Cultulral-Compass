@@ -17,6 +17,7 @@ class RoomDestinationRepository constructor(val placeDao: UserDao) : Destination
         return FakeDestinationDataSource.dummyDestination
     }
 
+
     override suspend fun findPlaceByName(name: String): List<Destination> {
         delay(200)
         if (name.isBlank()) {
@@ -31,6 +32,18 @@ class RoomDestinationRepository constructor(val placeDao: UserDao) : Destination
         destination.isFavorite = !destination.isFavorite
     }
 
+    override suspend fun getRate(id: Int): Int {
+        delay(100)
+        val place = FakeDestinationDataSource.dummyDestination.find{destination -> destination.id == id }
+            ?: Destination.default()
+        return place.rate
+    }
+
+    override suspend fun updateRatingDestination(id: Int, newRate: Int) {
+        delay(200)
+        val destination = findDestinationById(id)
+        destination.rate = newRate
+    }
     override suspend fun findDestinationById(id: Int): Destination {
         delay(100)
         return FakeDestinationDataSource.dummyDestination.find { destination -> destination.id == id }

@@ -1,5 +1,6 @@
 package me.ppvan.meplace.viewmodel
 
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -20,6 +21,7 @@ class PlaceDetailsViewModel constructor(private val resRepository: RestaurantRep
     val favorite = mutableStateOf(false)
     val subscribed = mutableStateOf(false)
     val restaurants = mutableStateListOf<Restaurant>()
+    var currRate = mutableIntStateOf(0)
 
     init {
         loadResData()
@@ -34,6 +36,15 @@ class PlaceDetailsViewModel constructor(private val resRepository: RestaurantRep
             }
     }
 
+    fun loadRateData(id: Int) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val rateNow = desRepository.getRate(id)
+
+            withContext(Dispatchers.Main) {
+                currRate = mutableIntStateOf(rateNow)
+            }
+        }
+    }
     private val _listSelectedSchedule = mutableStateListOf<Int>()
     val listSelectedSchedule: List<Int> get() = _listSelectedSchedule
 
@@ -45,6 +56,12 @@ class PlaceDetailsViewModel constructor(private val resRepository: RestaurantRep
         }
 
         return ""
+    }
+
+    fun updateRatingStar(id: Int, newRate: Int) {
+        viewModelScope.launch {
+            desRepository.updateRatingDestination(id, newRate)
+        }
     }
 
     fun updateScheduleDestination(schedule: Schedule) {

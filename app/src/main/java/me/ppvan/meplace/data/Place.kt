@@ -7,13 +7,13 @@ data class Destination(
     val id: Int,
     val name: String,
     val location: String,
-    val rate: String,
+    var rate: Int,
     val description: String,
     val ticketPrice: String,
     val picture: Int,
     val schedule: List<Schedule>,
     var isFavorite: Boolean,
-    var isSubscribed: Boolean = false
+    var isSubscribed: Boolean = false,
 ) {
     companion object {
         // Default Destination object with some default values
@@ -22,13 +22,13 @@ data class Destination(
                 id = 0,
                 name = "Default Name",
                 location = "Default Location",
-                rate = "Default Rate",
+                rate = 3,
                 description = "Default Description",
                 ticketPrice = "Default Ticket Price",
                 picture = R.drawable.vhl, // Assuming you have a default picture resource
                 schedule = emptyList(),
                 isFavorite = false,
-                isSubscribed = false
+                isSubscribed = false,
             )
         }
     }

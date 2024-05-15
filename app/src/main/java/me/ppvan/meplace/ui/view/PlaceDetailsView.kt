@@ -3,6 +3,7 @@ package me.ppvan.meplace.ui.view
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -86,6 +87,10 @@ fun PlaceDetailsView(id: Int, onBackPress: () -> Unit, navigateToDetail: (Int) -
     var dialogVisible by remember {
         mutableStateOf(false)
     }
+    viewModel.loadRateData(id)
+    var currRate by remember {
+        mutableStateOf(viewModel.currRate)
+    }
     val isFavorite by viewModel.favorite
     val subscribed by viewModel.subscribed
 
@@ -102,7 +107,6 @@ fun PlaceDetailsView(id: Int, onBackPress: () -> Unit, navigateToDetail: (Int) -
             .verticalScroll(rememberScrollState())
     ) {
             Box(modifier = Modifier){
-
                 DetailDestination(
                     modifier = Modifier,
                     destination = destination,
@@ -133,13 +137,20 @@ fun PlaceDetailsView(id: Int, onBackPress: () -> Unit, navigateToDetail: (Int) -
         ResListRecommend(resList = viewModel.restaurants, modifier = Modifier, navigateToDetail)
 
 
-        val ratingState = remember { mutableIntStateOf(0) }
         Column(
                 modifier = Modifier.fillMaxSize(),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                UserRatingBar(ratingState = ratingState)
+                UserRatingBar(
+//                    modifier = Modifier.clickable(
+//                        onClick = {
+//                            viewModel.updateRatingStar(id, newRate)
+//                        }
+//                    ),
+                    modifier = Modifier,
+                    ratingState = currRate
+                )
             }
 
     }

@@ -1,5 +1,7 @@
 package me.ppvan.meplace.ui.view
 
+import android.content.Intent
+import android.net.Uri
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -42,6 +44,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -78,6 +81,7 @@ fun RestaurantDetailView(id: Int, onBackPress:() -> Unit) {
     ) {
         DetailResHeader(modifier = Modifier.systemBarsPadding(), restaurant = restaurant, navigateBack = onBackPress)
         DetailResContent(modifier = Modifier, restaurant = restaurant)
+        MyButton(restaurant = restaurant)
     }
 }
 
@@ -147,7 +151,17 @@ fun DetailResContent(modifier: Modifier, restaurant: Restaurant) {
         )
     }
 }
+@Composable
+fun MyButton(restaurant: Restaurant) {
+    val context = LocalContext.current
+    val pathRes = restaurant.webPath
+    println(restaurant)
+    val intent = remember { Intent(Intent.ACTION_VIEW, Uri.parse(pathRes)) }
 
+    Button(onClick = { context.startActivity(intent) }) {
+        Text(text = restaurant.name)
+    }
+}
 @Preview
 @Composable
 fun ResDetailPreview() {
