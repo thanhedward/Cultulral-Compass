@@ -70,7 +70,7 @@ import me.ppvan.meplace.viewmodel.RestaurantDetailsViewModel
 import me.ppvan.meplace.ui.component.UserRatingBar
 
 @Composable
-fun PlaceDetailsView(id: Int, onBackPress: () -> Unit, navigateToDetail: (Int) -> Unit) {
+fun PlaceDetailsView(id: Int, onBackPress: () -> Unit, navigateToDetail: (Int) -> Unit, isFavorite: Boolean, updateFavoriteDestination: () -> Unit) {
 
     val viewModel = viewModel<PlaceDetailsViewModel>(factory = viewModelFactory {
         PlaceDetailsViewModel(MePlaceApplication.appModule.resRepo, MePlaceApplication.appModule.placeRepo)
@@ -88,10 +88,10 @@ fun PlaceDetailsView(id: Int, onBackPress: () -> Unit, navigateToDetail: (Int) -
         mutableStateOf(false)
     }
     viewModel.loadRateData(id)
-    var currRate by remember {
+    val currRate by remember {
         mutableStateOf(viewModel.currRate)
     }
-    val isFavorite by viewModel.favorite
+
     val subscribed by viewModel.subscribed
 
     LaunchedEffect(key1 = id) {
@@ -116,7 +116,7 @@ fun PlaceDetailsView(id: Int, onBackPress: () -> Unit, navigateToDetail: (Int) -
                     navigateBack = onBackPress,
                     isFavorite = isFavorite,
                     favoriteClick = {
-                        viewModel.updateFavoriteDestination(id)
+                        updateFavoriteDestination()
                     }
                 )
             }

@@ -90,8 +90,29 @@ fun MePlaceApp() {
     var selectedPage by remember {
         mutableStateOf(PlacePages.Home)
     }
+
     fun updateSelectedTab(newTab: PlacePages) {
         selectedPage = newTab
+    }
+
+    var favourite by remember {
+        mutableStateOf(List(10) { false })
+    }
+
+    fun updateFavouriteStatus(index: Int) {
+        if (index in favourite.indices) {
+            favourite = favourite.toMutableList().apply {
+                this[index] = !this[index]
+            }
+        }
+    }
+
+    fun isFavouriteAtIndex(index: Int): Boolean {
+        return if (index in favourite.indices) {
+            favourite[index]
+        } else {
+            false
+        }
     }
 
     fun updateSelectedTabOtherTab(newTab: PlacePages) {
@@ -105,7 +126,7 @@ fun MePlaceApp() {
 
     val memoryGameViewModel = viewModel<MemoryGameViewModel>()
 
-    NavHost(navController = navigator, startDestination = Routes.Login.name) {
+    NavHost(navController = navigator, startDestination = Routes.Home.name) {
         composable(route = Routes.Home.name) {
             HomeView(
                 navigator, homeViewModel, placeViewModel, libraryViewModel, profileViewModel, gameViewModel,
@@ -136,8 +157,13 @@ fun MePlaceApp() {
                 onBackPress = {navigator.popBackStack()},
                 navigateToDetail = {
                     id -> navigator.navigate("${Routes.Restaurant.name}/${id}")
-                }
-            )
+                },
+                isFavouriteAtIndex(id.toInt() - 1),
+
+
+            ){
+                updateFavouriteStatus(id.toInt() - 1)
+            }
         }
         composable(
             route = "${Routes.Restaurant.name}/{id}"
