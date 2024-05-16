@@ -217,7 +217,7 @@ fun DetailContent(modifier: Modifier, destination: Destination) {
 //            color = BlackColor500,
 //            fontFamily = poppinsFamily,
             fontWeight = FontWeight.Medium,
-            fontSize = 16.sp,g
+            fontSize = 16.sp,
             modifier = modifier.padding(bottom = 6.dp)
         )
         Text(
