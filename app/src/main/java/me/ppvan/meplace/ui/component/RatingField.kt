@@ -1,36 +1,23 @@
 package me.ppvan.meplace.ui.component
 
-import android.view.MotionEvent
-import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.outlined.StarBorder
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.input.pointer.pointerInteropFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -39,12 +26,13 @@ import me.ppvan.meplace.R
 @Composable
 fun UserRatingBar(
     modifier: Modifier = Modifier,
-    size: Dp = 64.dp,
+    size: Dp = 56.dp,
     ratingState: Int,
     ratingIconPainter: Painter = painterResource(id = R.drawable.ic_star),
     selectedColor: Color = Color(0xFFFFD700),
     unselectedColor: Color = Color(0xFFA2ADB1),
-    rating: (Int) -> Unit
+    rating: (Int) -> Unit,
+    totalRating: Int
 ) {
 
     Text(
@@ -54,7 +42,15 @@ fun UserRatingBar(
         modifier = modifier.padding(bottom = 6.dp)
     )
 
-    Row {
+    Row (
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = totalRating.toString() + ".0",
+            fontWeight = FontWeight.Medium,
+            fontSize = 50.sp,
+            modifier = modifier.padding()
+        )
         repeat(5) { index ->
             val icon = if (index < ratingState) {
                 Icons.Filled.Star
