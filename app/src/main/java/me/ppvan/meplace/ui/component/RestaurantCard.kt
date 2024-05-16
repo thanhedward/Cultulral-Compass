@@ -23,6 +23,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import me.ppvan.meplace.R
@@ -33,6 +34,7 @@ fun RestaurantCard(restaurant: Restaurant, modifier: Modifier = Modifier, onClic
     ElevatedCard {
         Column(
             modifier = modifier
+                .width(300.dp)
                 .clip(RoundedCornerShape(18.dp))
                 .clickable { onClickCard(restaurant.id) }) {
             Box(contentAlignment = Alignment.TopEnd, modifier = modifier.padding(10.dp)) {
@@ -75,6 +77,8 @@ fun RestaurantCard(restaurant: Restaurant, modifier: Modifier = Modifier, onClic
             }
             Column(modifier = modifier.padding(start = 20.dp, end = 20.dp, bottom = 20.dp)) {
                 Text(
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
                     text = restaurant.name,
 //                fontFamily = poppinsFamily,
                     fontSize = 18.sp,

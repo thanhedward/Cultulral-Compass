@@ -41,6 +41,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -55,6 +56,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import me.ppvan.meplace.MePlaceApplication
 import me.ppvan.meplace.Routes
 import me.ppvan.meplace.data.Schedule
@@ -72,6 +75,15 @@ import me.ppvan.meplace.ui.component.UserRatingBar
 
 @Composable
 fun PlaceDetailsView(id: Int, onBackPress: () -> Unit, navigateToDetail: (Int) -> Unit, isFavorite: Boolean, updateFavoriteDestination: () -> Unit, rating: (Int) -> Unit, currRate: Int) {
+
+    var data by remember { mutableStateOf("Loading...") }
+    val coroutineScope = rememberCoroutineScope()
+
+    LaunchedEffect(Unit) {
+        coroutineScope.launch(Dispatchers.IO) {
+            data = fetchDataFromApi()
+        }
+    }
 
     val viewModel = viewModel<PlaceDetailsViewModel>(factory = viewModelFactory {
         PlaceDetailsViewModel(MePlaceApplication.appModule.resRepo, MePlaceApplication.appModule.placeRepo)
@@ -118,6 +130,10 @@ fun PlaceDetailsView(id: Int, onBackPress: () -> Unit, navigateToDetail: (Int) -
                     }
                 )
             }
+            Text(
+                text = data,
+                modifier = Modifier.fillMaxWidth(),
+            )
         DetailContent(modifier = Modifier, destination = destination)
 
         ResListRecommend(resList = viewModel.restaurants, modifier = Modifier, navigateToDetail)
@@ -133,6 +149,7 @@ fun PlaceDetailsView(id: Int, onBackPress: () -> Unit, navigateToDetail: (Int) -
 
 @Composable
 fun DetailContent(modifier: Modifier, destination: Destination) {
+    var maxDescriptionLines by remember { mutableStateOf(4) }
     Column(
         modifier = modifier
             .padding(horizontal = 24.dp, vertical = 20.dp),
@@ -171,6 +188,9 @@ fun DetailContent(modifier: Modifier, destination: Destination) {
             lineHeight = 26.sp,
             fontSize = 16.sp,
             modifier = modifier.padding(bottom = 6.dp)
+                .clickable {
+                    maxDescriptionLines = if (maxDescriptionLines == 4) 20 else 4
+                }
         )
     }
 }
