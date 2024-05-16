@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.rememberScrollState
@@ -33,12 +34,14 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import me.ppvan.meplace.MePlaceApplication
+import me.ppvan.meplace.data.Comment
 import me.ppvan.meplace.data.Destination
 import me.ppvan.meplace.data.Restaurant
 import me.ppvan.meplace.ui.component.BottomRoundedShape
@@ -50,7 +53,17 @@ import me.ppvan.meplace.ui.component.RestaurantCard
 import me.ppvan.meplace.ui.component.UserRatingBar
 
 @Composable
-fun PlaceDetailsView(id: Int, onBackPress: () -> Unit, navigateToDetail: (Int) -> Unit, isFavorite: Boolean, updateFavoriteDestination: () -> Unit, rating: (Int) -> Unit, currRate: Int) {
+fun PlaceDetailsView(
+    id: Int,
+    onBackPress: () -> Unit,
+    navigateToDetail: (Int) -> Unit,
+    isFavorite: Boolean,
+    updateFavoriteDestination: () -> Unit,
+    rating: (Int) -> Unit,
+    currRate: Int,
+    newComment: (Comment) -> Unit,
+    comments: List<Comment>
+) {
 
     var data by remember { mutableStateOf("Loading...") }
     val coroutineScope = rememberCoroutineScope()
@@ -91,6 +104,7 @@ fun PlaceDetailsView(id: Int, onBackPress: () -> Unit, navigateToDetail: (Int) -
             .fillMaxSize()
             .padding(innerPadding)
             .verticalScroll(rememberScrollState())
+            .imePadding()
     ) {
             Box(modifier = Modifier){
                 DetailDestination(
@@ -114,7 +128,14 @@ fun PlaceDetailsView(id: Int, onBackPress: () -> Unit, navigateToDetail: (Int) -
 
         ResListRecommend(resList = viewModel.restaurants, modifier = Modifier, navigateToDetail)
 
-        UserRatingBar(modifier = Modifier.padding(horizontal = 24.dp, vertical = 20.dp), ratingState = currRate, rating = rating, totalRating = destination.rate)
+        UserRatingBar(
+            modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp),
+            ratingState = currRate,
+            rating = rating,
+            newComment = newComment,
+            totalRating = destination.rate,
+            sourceComments = destination.comments + comments
+        )
 
     }
 
@@ -161,6 +182,8 @@ fun DetailContent(modifier: Modifier, destination: Destination) {
         Text(
             text = destination.description,
             fontWeight = FontWeight.Light,
+            maxLines = maxDescriptionLines,
+            overflow = TextOverflow.Ellipsis,
             lineHeight = 26.sp,
             fontSize = 16.sp,
             modifier = modifier.padding(bottom = 6.dp)
