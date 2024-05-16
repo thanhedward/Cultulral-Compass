@@ -11,6 +11,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.outlined.StarBorder
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -23,6 +26,7 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.pointer.pointerInteropFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -42,25 +46,25 @@ fun UserRatingBar(
     unselectedColor: Color = Color(0xFFA2ADB1),
     rating: (Int) -> Unit
 ) {
+
     Text(
         text = "Đánh giá",
-//            color = BlackColor500,
-//            fontFamily = poppinsFamily,
         fontWeight = FontWeight.Medium,
         fontSize = 16.sp,
         modifier = modifier.padding(bottom = 6.dp)
     )
-    Row(modifier = modifier.fillMaxWidth()
-        .padding(bottom = 6.dp)) {
-        // 2. Star Icon Generation Loop
-        for (value in 1..5) {
+
+    Row {
+        repeat(5) { index ->
+            val icon = if (index < ratingState) {
+                Icons.Filled.Star
+            } else {
+                Icons.Outlined.StarBorder
+            }
             StarIcon(
                 size = size,
-                painter = ratingIconPainter,
-                ratingValue = value,
-                ratingState = ratingState,
-                selectedColor = selectedColor,
-                unselectedColor = unselectedColor,
+                icon= icon,
+                ratingValue = index + 1,
                 onClick = rating
             )
         }
@@ -68,8 +72,6 @@ fun UserRatingBar(
 
     Text(
         text = "Bình luận",
-//            color = BlackColor500,
-//            fontFamily = poppinsFamily,
         fontWeight = FontWeight.Medium,
         fontSize = 16.sp,
         modifier = modifier.padding(bottom = 6.dp)
@@ -79,28 +81,19 @@ fun UserRatingBar(
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun StarIcon(
-    // 3. Parameters for StarIcon
     size: Dp,
-    ratingState: Int,
-    painter: Painter,
+    icon: ImageVector,
     ratingValue: Int,
-    selectedColor: Color,
-    unselectedColor: Color,
     onClick: (Int) -> Unit
 ) {
-    // 4. Color Animation
-    val tint by animateColorAsState(
-        targetValue = if (ratingValue <= ratingState) selectedColor else unselectedColor,
-        label = ""
-    )
 
     Icon(
-        painter = painter,
-        contentDescription = null,
+        imageVector = icon,
+        contentDescription = "Star Rating",
+        tint = Color(0xffffd700),
         modifier = Modifier
             .size(size)
             .clickable { onClick(ratingValue) },
-        tint = tint
     )
 }
 
