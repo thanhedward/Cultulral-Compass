@@ -135,49 +135,11 @@ fun PlaceDetailsView(id: Int, onBackPress: () -> Unit, navigateToDetail: (Int) -
                 modifier = Modifier.fillMaxWidth(),
             )
         DetailContent(modifier = Modifier, destination = destination)
-//        DetailBookingNow(
-//            modifier = Modifier,
-//            listSchedule = destination.schedule,
-//            listSelectedSchedule = viewModel.listSelectedSchedule,
-//            onClickCard = {
-//                viewModel.updateScheduleDestination(it)
-//            }
-//        )
-//        DetailPriceAndContinue(modifier = Modifier, subscribed = subscribed) {
-//            dialogVisible = true
-//        }
-
 
         ResListRecommend(resList = viewModel.restaurants, modifier = Modifier, navigateToDetail)
 
+        UserRatingBar(modifier = Modifier.padding(horizontal = 24.dp, vertical = 20.dp), ratingState = currRate, rating = rating)
 
-        Column(
-                modifier = Modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally,
-            ) {
-                UserRatingBar(
-//                    modifier = Modifier.clickable(
-//                        onClick = {
-//                            viewModel.updateRatingStar(id, newRate)
-//                        }
-//                    ),
-                    modifier = Modifier,
-                    ratingState = currRate,
-                    rating = rating
-                )
-            }
-
-    }
-
-    if (dialogVisible) {
-        ConfirmAlertDialog(
-            onDismissRequest = { dialogVisible = false },
-            onConfirmation = { dialogVisible = false; viewModel.updateSubscribedState(id) },
-            dialogTitle = "Xác nhận",
-            dialogText = "Bạn chắc chắn muốn đăng ký place?",
-            icon = Icons.Filled.Info
-        )
     }
 
     }
@@ -222,12 +184,8 @@ fun DetailContent(modifier: Modifier, destination: Destination) {
         )
         Text(
             text = destination.description,
-//            color = BlackColorBody,
-//            fontFamily = poppinsFamily,
             fontWeight = FontWeight.Light,
-            maxLines = maxDescriptionLines,
             lineHeight = 26.sp,
-            overflow = TextOverflow.Ellipsis,
             fontSize = 16.sp,
             modifier = modifier.padding(bottom = 6.dp)
                 .clickable {
@@ -236,108 +194,6 @@ fun DetailContent(modifier: Modifier, destination: Destination) {
         )
     }
 }
-
-@Composable
-fun DetailBookingNow(
-    modifier: Modifier,
-    listSchedule: List<Schedule>,
-    listSelectedSchedule: List<Int>,
-    onClickCard: (Schedule) -> Unit = {}
-) {
-    Text(
-        text = "Đặt ngay:",
-//        color = BlackColor500, fontFamily = poppinsFamily,
-        fontWeight = FontWeight.Medium,
-        fontSize = 16.sp,
-        modifier = modifier.padding(bottom = 12.dp, start = 24.dp)
-    )
-    LazyRow(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(bottom = 15.dp),
-        contentPadding = PaddingValues(horizontal = 20.dp),
-        horizontalArrangement = Arrangement.spacedBy(24.dp),
-    ) {
-
-        items(listSchedule) { schedule ->
-            Column(
-                modifier = modifier
-                    .clip(RoundedCornerShape(22.dp))
-//                    .background(WhiteColor)
-                    .width(80.dp)
-                    .height(100.dp)
-            ) {
-                ScheduleCard(
-                    modifier = modifier,
-                    schedule = schedule,
-                    isSelected = listSelectedSchedule.contains(schedule.id),
-                    onCardClick = onClickCard
-                )
-            }
-        }
-    }
-}
-
-@Composable
-fun DetailPriceAndContinue(modifier: Modifier, subscribed: Boolean, onClickButton: () -> Unit) {
-    Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(horizontal = 24.dp, vertical = 30.dp),
-    ) {
-        Column(
-            modifier = modifier
-                .align(Alignment.CenterVertically)
-                .padding(end = 30.dp)
-        ) {
-            Text(
-                text = "$22,800",
-                fontWeight = FontWeight.Medium,
-                fontSize = 22.sp,
-            )
-            Text(
-                text = "/người",
-                fontWeight = FontWeight.Light,
-                fontSize = 12.sp,
-            )
-        }
-        if (subscribed) {
-            Button(
-                onClick = onClickButton,
-                shape = RoundedCornerShape(22.dp),
-                modifier = modifier
-                    .fillMaxWidth()
-                    .height(60.dp)
-                    .align(Alignment.CenterVertically),
-                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.tertiary)
-            ) {
-                Text(
-                    text = "Hủy đăng ký",
-                    fontWeight = FontWeight.SemiBold,
-                    fontSize = 18.sp,
-                )
-            }
-        } else {
-            Button(
-                onClick = onClickButton,
-                shape = RoundedCornerShape(22.dp),
-                modifier = modifier
-                    .fillMaxWidth()
-                    .height(60.dp)
-                    .align(Alignment.CenterVertically)
-                    .clip(RoundedCornerShape(22.dp))
-                    .background(MaterialTheme.colorScheme.primary)
-            ) {
-                Text(
-                    text = "Đăng ký",
-                    fontWeight = FontWeight.SemiBold,
-                    fontSize = 18.sp,
-                )
-            }
-        }
-    }
-}
-
 @Composable
 fun Header(
     modifier: Modifier,
@@ -378,48 +234,6 @@ fun DetailDestination(
                 .clip(shape = BottomRoundedShape())
         )
     }
-}
-
-@Composable
-fun ConfirmAlertDialog(
-    onDismissRequest: () -> Unit,
-    onConfirmation: () -> Unit,
-    dialogTitle: String,
-    dialogText: String,
-    icon: ImageVector,
-) {
-    AlertDialog(
-        icon = {
-            Icon(icon, contentDescription = "Example Icon")
-        },
-        title = {
-            Text(text = dialogTitle)
-        },
-        text = {
-            Text(text = dialogText)
-        },
-        onDismissRequest = {
-            onDismissRequest()
-        },
-        confirmButton = {
-            TextButton(
-                onClick = {
-                    onConfirmation()
-                }
-            ) {
-                Text("OK")
-            }
-        },
-        dismissButton = {
-            TextButton(
-                onClick = {
-                    onDismissRequest()
-                }
-            ) {
-                Text("Hủy")
-            }
-        }
-    )
 }
 
 @Composable
