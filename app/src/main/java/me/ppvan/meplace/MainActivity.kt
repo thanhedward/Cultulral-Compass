@@ -18,6 +18,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import me.ppvan.meplace.ui.page.PlacePage
 import me.ppvan.meplace.ui.page.ProfileEditPassPage
 import me.ppvan.meplace.ui.theme.MePlaceTheme
 import me.ppvan.meplace.ui.view.HomeView
@@ -47,8 +48,6 @@ class MainActivity : ComponentActivity() {
         WindowCompat.setDecorFitsSystemWindows(window, false)
         setContent {
             MePlaceTheme {
-
-                // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
@@ -144,7 +143,7 @@ fun MePlaceApp() {
         composable(route = Routes.Home.name) {
             HomeView(
                 navigator, homeViewModel, placeViewModel, libraryViewModel, profileViewModel, gameViewModel,
-                navigateToDetails = { id -> navigator.navigate("${Routes.Place.name}/${id}") }, selectedPage, { newTab -> updateSelectedTab(newTab) }, {navigateToAboutMe()})
+                navigateToDetails = { id -> navigator.navigate("${Routes.Place.name}/${id}") }, selectedPage, { newTab -> updateSelectedTab(newTab) }, {navigateToAboutMe()}, {navigator.navigate(Routes.Search.name)})
 
         }
         composable(route = Routes.Recommendation.name){
@@ -178,6 +177,11 @@ fun MePlaceApp() {
                 currRate = getRate(id.toInt() - 1)
             )
         }
+
+        composable(route = Routes.Search.name) {
+            PlacePage(placeViewModel, navigateToDetails = { id -> navigator.navigate("${Routes.Place.name}/${id}") })
+        }
+
         composable(
             route = "${Routes.Restaurant.name}/{id}"
         ) { backStackEntry ->
@@ -245,7 +249,7 @@ fun MePlaceApp() {
 }
 
 enum class Routes {
-    Home, Place, Register, Login, QuizGame, MemoryGame, ChangePass, Restaurant, Recommendation
+    Home, Place, Register, Login, QuizGame, MemoryGame, ChangePass, Restaurant, Recommendation, Search
 }
 
 @Preview(showBackground = true)

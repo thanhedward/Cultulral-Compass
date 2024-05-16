@@ -15,14 +15,20 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
@@ -54,7 +60,7 @@ import me.ppvan.meplace.Routes
 
 
 @Composable
-fun HomePage(viewModel: HomeViewModel, user: User, navigateToDetail: (Int) -> Unit, navigateToAboutMe: () -> Unit, navigator: NavHostController) {
+fun HomePage(viewModel: HomeViewModel, user: User, navigateToDetail: (Int) -> Unit, navigateToAboutMe: () -> Unit, navigateToSearch: () -> Unit, navigator: NavHostController) {
 
     when (viewModel.state.value) {
         HomeStates.Loading -> {
@@ -69,6 +75,7 @@ fun HomePage(viewModel: HomeViewModel, user: User, navigateToDetail: (Int) -> Un
                 navigateToDetail = navigateToDetail,
                 user,
                 navigateToAboutMe,
+                navigateToSearch,
                 navigator
             )
 
@@ -87,18 +94,30 @@ fun HomeContent(
     navigateToDetail: (Int) -> Unit,
     user: User,
     navigateToAboutMe: () -> Unit,
+    navigateToSearch: () -> Unit,
     navigator: NavHostController
 ) {
     LazyColumn {
         item { ConstraintLayout(modifier = Modifier.fillMaxSize()) {
-            val (headerBox, popularBox, recommendTextBox, recommendBox) = createRefs()
+            val (headerBox, text1, popularBox, recommendTextBox, recommendBox) = createRefs()
             HomeHeader(
                 modifier = Modifier.constrainAs(headerBox){},
                 user = user,
-                navigateToAboutMe = navigateToAboutMe)
+                navigateToAboutMe = navigateToAboutMe,
+                navigateSearch = navigateToSearch
+                )
+            Text(
+                text = "Đề xuất cho bạn",
+                fontSize = 18.sp,
+                fontWeight = FontWeight.SemiBold,
+                modifier = modifier.constrainAs(text1) {
+                    top.linkTo(headerBox.bottom)
+                    start.linkTo(parent.start, margin = 24.dp)
+                }
+            )
             LazyRow(
                 modifier = Modifier.constrainAs(popularBox) {
-                    top.linkTo(headerBox.bottom)
+                    top.linkTo(text1.bottom, margin = 10.dp)
                 },
                 horizontalArrangement = Arrangement.spacedBy(24.dp),
                 contentPadding = PaddingValues(horizontal = 24.dp),
@@ -126,7 +145,7 @@ fun HomeContent(
                 modifier = modifier
                     .padding(start = 24.dp, end = 24.dp, bottom = 30.dp)
                     .constrainAs(recommendBox) {
-                        top.linkTo(recommendTextBox.bottom, margin = 24.dp)
+                        top.linkTo(recommendTextBox.bottom, margin = 10.dp)
                     }
 
                     .nestedScroll(
@@ -153,22 +172,25 @@ fun HomeContent(
                         Image(
                             painter = painterResource(id = R.drawable.discover),
                             contentDescription = "",
-                            modifier = Modifier.constrainAs(img){
-                                top.linkTo(parent.top)
-                                end.linkTo(parent.end)
-                                bottom.linkTo(parent.bottom)
-                            }.fillMaxSize(),
+                            modifier = Modifier
+                                .constrainAs(img) {
+                                    top.linkTo(parent.top)
+                                    end.linkTo(parent.end)
+                                    bottom.linkTo(parent.bottom)
+                                }
+                                .fillMaxSize(),
                             contentScale = ContentScale.FillBounds
                         )
 
                         Box(
-                            modifier = modifier.constrainAs(discoverBtn) {
-                                bottom.linkTo(parent.bottom, margin = 10.dp)
-                                end.linkTo(parent.end, margin = 10.dp)
-                            }
+                            modifier = modifier
+                                .constrainAs(discoverBtn) {
+                                    bottom.linkTo(parent.bottom, margin = 10.dp)
+                                    end.linkTo(parent.end, margin = 10.dp)
+                                }
                                 .background(Color.White, shape = RoundedCornerShape(8.dp))
 
-                                .clickable (
+                                .clickable(
                                     onClick = {
                                         navigator.navigate(Routes.Recommendation.name)
                                     }
@@ -192,45 +214,48 @@ fun HomeContent(
 }
 
 @Composable
-fun HomeHeader(modifier: Modifier = Modifier, user: User, navigateToAboutMe: () -> Unit) {
-
+fun HomeHeader(modifier: Modifier = Modifier, user: User, navigateToAboutMe: () -> Unit, navigateSearch: () -> Unit) {
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .padding(vertical = 30.dp, horizontal = 24.dp),
+            .padding(top = 20.dp, bottom = 30.dp, start = 24.dp, end = 15.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.Bottom
     ) {
         Column {
             Text(
-                text = "Xin chào,\n${user.fullName}",
-                lineHeight = 36.sp,
-                color = MaterialTheme.colorScheme.onBackground,
+                text = "Home",
+                color = Color.Black,
                 fontSize = 24.sp,
-                fontWeight = FontWeight.SemiBold,
+                fontWeight = FontWeight.Bold,
             )
-            Spacer(modifier = modifier.height(6.dp))
-            Text(
-                text = "Cùng tìm những trải nghiệm mới",
-                fontSize = 16.sp,
-                color = MaterialTheme.colorScheme.onSurface,
-                fontWeight = FontWeight.Light,
-            )
+
         }
-        AsyncImage(
-            model = ImageRequest.Builder(LocalContext.current)
-                .data(user.avatarUrl)
-                .error(R.drawable.default_user)
-                .build(),
-            contentScale = ContentScale.Crop,
-            modifier = Modifier
-                .noRippleClickable {
-                    navigateToAboutMe()
-                }
-                .padding(top = 6.dp)
-                .size(90.dp)
-                .clip(shape = CircleShape),
-            contentDescription = stringResource(id = R.string.app_name),
-        )
+        Row {
+            Icon(
+                imageVector = Icons.Default.Search,
+                contentDescription = "Search",
+                modifier = Modifier.size(36.dp).clickable { navigateSearch()}
+            )
+            
+            Spacer(modifier = Modifier.width(15.dp))
+            
+            AsyncImage(
+                model = ImageRequest.Builder(LocalContext.current)
+                    .data(user.avatarUrl)
+                    .error(R.drawable.default_user)
+                    .build(),
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .noRippleClickable {
+                        navigateToAboutMe()
+                    }
+                    .size(36.dp)
+                    .clip(shape = CircleShape),
+                contentDescription = stringResource(id = R.string.app_name),
+            )
+
+        }
     }
 }
 

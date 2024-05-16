@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
@@ -19,7 +18,6 @@ import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.Place
 import androidx.compose.material.icons.outlined.VideogameAsset
-import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -56,11 +54,11 @@ fun HomeView(
     navigateToDetails: (Int) -> Unit,
     selectedPage: PlacePages,
     updateSelectedPage: (PlacePages) -> Unit,
-    navigateToAboutMe: () -> Unit
+    navigateToAboutMe: () -> Unit,
+    navigateToSearch: () -> Unit
 ) {
 
     Scaffold(
-
         bottomBar = {
             MePlaceNavigationBar(
                 selectedPage = selectedPage,
@@ -90,6 +88,7 @@ fun HomeView(
                     profileViewModel.loggedInUser,
                     navigateToDetails,
                     navigateToAboutMe,
+                    navigateToSearch,
                     navController
                 )
 
