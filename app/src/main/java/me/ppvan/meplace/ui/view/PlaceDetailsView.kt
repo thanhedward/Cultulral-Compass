@@ -1,5 +1,6 @@
 package me.ppvan.meplace.ui.view
 
+import android.media.Rating
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -70,7 +71,7 @@ import me.ppvan.meplace.viewmodel.RestaurantDetailsViewModel
 import me.ppvan.meplace.ui.component.UserRatingBar
 
 @Composable
-fun PlaceDetailsView(id: Int, onBackPress: () -> Unit, navigateToDetail: (Int) -> Unit, isFavorite: Boolean, updateFavoriteDestination: () -> Unit) {
+fun PlaceDetailsView(id: Int, onBackPress: () -> Unit, navigateToDetail: (Int) -> Unit, isFavorite: Boolean, updateFavoriteDestination: () -> Unit, rating: (Int) -> Unit, currRate: Int) {
 
     val viewModel = viewModel<PlaceDetailsViewModel>(factory = viewModelFactory {
         PlaceDetailsViewModel(MePlaceApplication.appModule.resRepo, MePlaceApplication.appModule.placeRepo)
@@ -88,9 +89,6 @@ fun PlaceDetailsView(id: Int, onBackPress: () -> Unit, navigateToDetail: (Int) -
         mutableStateOf(false)
     }
     viewModel.loadRateData(id)
-    val currRate by remember {
-        mutableStateOf(viewModel.currRate)
-    }
 
     val subscribed by viewModel.subscribed
 
@@ -149,7 +147,8 @@ fun PlaceDetailsView(id: Int, onBackPress: () -> Unit, navigateToDetail: (Int) -
 //                        }
 //                    ),
                     modifier = Modifier,
-                    ratingState = currRate
+                    ratingState = currRate,
+                    rating = rating
                 )
             }
 

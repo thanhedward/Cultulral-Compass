@@ -99,6 +99,20 @@ fun MePlaceApp() {
         mutableStateOf(List(10) { false })
     }
 
+    var rates by remember {
+        mutableStateOf(List(10) { 0 })
+    }
+
+    fun getRate(index: Int): Int {
+        return rates[index]
+    }
+
+    fun setRate(index: Int, rate: Int) {
+        rates = rates.toMutableList().apply{
+            this[index] = rate
+        }
+    }
+
     fun updateFavouriteStatus(index: Int) {
         if (index in favourite.indices) {
             favourite = favourite.toMutableList().apply {
@@ -159,11 +173,10 @@ fun MePlaceApp() {
                     id -> navigator.navigate("${Routes.Restaurant.name}/${id}")
                 },
                 isFavouriteAtIndex(id.toInt() - 1),
-
-
-            ){
-                updateFavouriteStatus(id.toInt() - 1)
-            }
+                updateFavoriteDestination = {updateFavouriteStatus(id.toInt() - 1)},
+                rating = {value -> setRate(id.toInt() - 1, value)},
+                currRate = getRate(id.toInt() - 1)
+            )
         }
         composable(
             route = "${Routes.Restaurant.name}/{id}"
