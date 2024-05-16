@@ -19,6 +19,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import me.ppvan.meplace.ui.page.PlacePage
+import me.ppvan.meplace.data.Comment
 import me.ppvan.meplace.ui.page.ProfileEditPassPage
 import me.ppvan.meplace.ui.theme.MePlaceTheme
 import me.ppvan.meplace.ui.view.HomeView
@@ -39,7 +40,6 @@ import me.ppvan.meplace.ui.view.QuizGame.QuizGameView
 import me.ppvan.meplace.ui.view.RecommendationView
 import me.ppvan.meplace.ui.view.RestaurantDetailView
 import me.ppvan.meplace.viewmodel.GameViewModel
-import java.nio.file.WatchEvent
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -112,6 +112,20 @@ fun MePlaceApp() {
         }
     }
 
+    var comments by remember {
+        mutableStateOf(List(10) { mutableListOf<Comment>() })
+    }
+
+    fun getComments(index: Int): List<Comment> {
+        return comments[index]
+    }
+
+    fun addComments(index: Int, comment: Comment) {
+        comments = comments.toMutableList().apply{
+            this[index].add(comment)
+        }
+    }
+
     fun updateFavouriteStatus(index: Int) {
         if (index in favourite.indices) {
             favourite = favourite.toMutableList().apply {
@@ -174,7 +188,9 @@ fun MePlaceApp() {
                 isFavouriteAtIndex(id.toInt() - 1),
                 updateFavoriteDestination = {updateFavouriteStatus(id.toInt() - 1)},
                 rating = {value -> setRate(id.toInt() - 1, value)},
-                currRate = getRate(id.toInt() - 1)
+                currRate = getRate(id.toInt() - 1),
+                newComment = {value -> addComments(id.toInt() - 1, value)},
+                comments = getComments(id.toInt() - 1)
             )
         }
 
@@ -202,7 +218,7 @@ fun MePlaceApp() {
             RegisterView(
                 state = registerViewModel.state.value,
                 onRegisterClick = { user ->
-                    registerViewModel.register(user);
+                    registerViewModel.register(user)
                     navigator.navigate(Routes.Login.name)
                 },
                 onLoginClick = { navigator.navigate(Routes.Login.name) })
