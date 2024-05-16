@@ -2,6 +2,7 @@ package me.ppvan.meplace.ui.component
 
 import android.view.MotionEvent
 import androidx.compose.animation.animateColorAsState
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -33,13 +34,13 @@ import me.ppvan.meplace.R
 
 @Composable
 fun UserRatingBar(
-    // 1. Parameters for UserRatingBar
     modifier: Modifier = Modifier,
     size: Dp = 64.dp,
-    ratingState: MutableState<Int> = remember { mutableIntStateOf(0) },
+    ratingState: Int,
     ratingIconPainter: Painter = painterResource(id = R.drawable.ic_star),
     selectedColor: Color = Color(0xFFFFD700),
-    unselectedColor: Color = Color(0xFFA2ADB1)
+    unselectedColor: Color = Color(0xFFA2ADB1),
+    rating: (Int) -> Unit
 ) {
     Text(
         text = "Đánh giá",
@@ -59,7 +60,8 @@ fun UserRatingBar(
                 ratingValue = value,
                 ratingState = ratingState,
                 selectedColor = selectedColor,
-                unselectedColor = unselectedColor
+                unselectedColor = unselectedColor,
+                onClick = rating
             )
         }
     }
@@ -79,15 +81,16 @@ fun UserRatingBar(
 fun StarIcon(
     // 3. Parameters for StarIcon
     size: Dp,
-    ratingState: MutableState<Int>,
+    ratingState: Int,
     painter: Painter,
     ratingValue: Int,
     selectedColor: Color,
-    unselectedColor: Color
+    unselectedColor: Color,
+    onClick: (Int) -> Unit
 ) {
     // 4. Color Animation
     val tint by animateColorAsState(
-        targetValue = if (ratingValue <= ratingState.value) selectedColor else unselectedColor,
+        targetValue = if (ratingValue <= ratingState) selectedColor else unselectedColor,
         label = ""
     )
 
@@ -96,28 +99,8 @@ fun StarIcon(
         contentDescription = null,
         modifier = Modifier
             .size(size)
-            // 5. Touch Interaction Handling
-            .pointerInteropFilter {
-                when (it.action) {
-                    MotionEvent.ACTION_DOWN -> {
-                        ratingState.value = ratingValue
-                    }
-                }
-                true
-            },
+            .clickable { onClick(ratingValue) },
         tint = tint
     )
 }
 
-@Preview
-@Composable
-fun PreviewUserRatingBar() {
-    val ratingState = remember { mutableIntStateOf(0) }
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ) {
-        UserRatingBar(ratingState = ratingState)
-    }
-}
