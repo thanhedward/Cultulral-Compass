@@ -19,9 +19,11 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Mic
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.Place
 import androidx.compose.material.icons.outlined.Search
+import androidx.compose.material.icons.outlined.StarBorder
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -157,7 +159,7 @@ fun PlaceCard(place: Destination, onClick: (Int) -> Unit) {
 //        ),
         modifier = Modifier
             .fillMaxWidth()
-            .aspectRatio(2.5f)
+            .aspectRatio(3.2f)
             .shadow(elevation = 4.dp, shape = RoundedCornerShape(12.dp))
             .clickable { onClick(place.id) }
     ) {
@@ -165,7 +167,7 @@ fun PlaceCard(place: Destination, onClick: (Int) -> Unit) {
             AsyncImage(
                 modifier = Modifier
                     .fillMaxHeight()
-                    .aspectRatio(3 / 4f)
+                    .aspectRatio(1f)
                     .clip(RoundedCornerShape(12.dp)),
                 model = place.picture,
                 placeholder = painterResource(id = R.drawable.vhl),
@@ -179,14 +181,21 @@ fun PlaceCard(place: Destination, onClick: (Int) -> Unit) {
 //                contentColor = MaterialTheme.colorScheme.onBackground,
 //                color = Color.Transparent
             ) {
-                Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                    Text(text = place.name, style = MaterialTheme.typography.titleLarge)
+                Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                    Text(
+                        text = place.name,
+                        style = MaterialTheme.typography.titleMedium,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
 
+                    RatingBar(rating = place.rate)
 
                     Column {
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Icon(
-                                modifier = Modifier.size(16.dp),
+                                modifier = Modifier.size(16.dp)
+                                    .padding(end = 2.dp),
                                 imageVector = Icons.Outlined.Place,
                                 contentDescription = "place",
                                 tint = Color(0xff898282)
@@ -201,7 +210,8 @@ fun PlaceCard(place: Destination, onClick: (Int) -> Unit) {
 
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Icon(
-                                modifier = Modifier.size(16.dp),
+                                modifier = Modifier.size(16.dp)
+                                    .padding(end = 2.dp),
                                 imageVector = Icons.Outlined.Info,
                                 contentDescription = "DateRange",
                                 tint = Color(0xff898282)
@@ -217,6 +227,25 @@ fun PlaceCard(place: Destination, onClick: (Int) -> Unit) {
                     }
                 }
             }
+        }
+    }
+}
+
+@Composable
+fun RatingBar(rating: Int) {
+    Row {
+        repeat(5) { index ->
+            val icon = if (index < rating) {
+                Icons.Filled.Star
+            } else {
+                Icons.Outlined.StarBorder
+            }
+            Icon(
+                imageVector = icon,
+                contentDescription = "Star Rating",
+                tint = Color(0xffffd700), // màu vàng
+                modifier = Modifier.size(16.dp)
+            )
         }
     }
 }
