@@ -47,6 +47,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -143,9 +144,7 @@ fun DetailResContent(modifier: Modifier, restaurant: Restaurant) {
         Text(
             text = restaurant.description,
             fontWeight = FontWeight.Light,
-            maxLines = 4,
             lineHeight = 26.sp,
-            overflow = TextOverflow.Ellipsis,
             fontSize = 16.sp,
             modifier = modifier.padding(bottom = 6.dp)
         )
@@ -156,10 +155,22 @@ fun MyButton(restaurant: Restaurant) {
     val context = LocalContext.current
     val pathRes = restaurant.webPath
     println(restaurant)
-    val intent = remember { Intent(Intent.ACTION_VIEW, Uri.parse(pathRes)) }
 
-    Button(onClick = { context.startActivity(intent) }) {
-        Text(text = restaurant.name)
+
+    Button(
+        onClick = {
+        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(pathRes))
+        context.startActivity(intent)
+    },
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp)
+    ) {
+        Text(
+            textAlign = TextAlign.Center,
+            text = restaurant.name
+        )
+
     }
 }
 @Preview
