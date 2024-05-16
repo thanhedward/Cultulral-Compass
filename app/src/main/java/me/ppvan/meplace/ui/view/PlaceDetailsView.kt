@@ -171,6 +171,7 @@ fun PlaceDetailsView(id: Int, onBackPress: () -> Unit, navigateToDetail: (Int) -
 
 @Composable
 fun DetailContent(modifier: Modifier, destination: Destination) {
+    var maxDescriptionLines by remember { mutableStateOf(4) }
     Column(
         modifier = modifier
             .padding(horizontal = 24.dp, vertical = 20.dp),
@@ -208,11 +209,14 @@ fun DetailContent(modifier: Modifier, destination: Destination) {
 //            color = BlackColorBody,
 //            fontFamily = poppinsFamily,
             fontWeight = FontWeight.Light,
-            maxLines = 4,
+            maxLines = maxDescriptionLines,
             lineHeight = 26.sp,
             overflow = TextOverflow.Ellipsis,
             fontSize = 16.sp,
             modifier = modifier.padding(bottom = 6.dp)
+                .clickable {
+                    maxDescriptionLines = if (maxDescriptionLines == 4) 20 else 4
+                }
         )
     }
 }
