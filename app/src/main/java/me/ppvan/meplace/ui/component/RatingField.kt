@@ -1,5 +1,6 @@
 package me.ppvan.meplace.ui.component
 
+import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -16,8 +17,13 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -31,11 +37,20 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import me.ppvan.meplace.R
 import me.ppvan.meplace.data.Comment
+import me.ppvan.meplace.data.Destination
+import me.ppvan.meplace.ui.view.CommentData
+import me.ppvan.meplace.ui.view.CommentDataDto
+import me.ppvan.meplace.ui.view.createCommemtToDes
+import me.ppvan.meplace.ui.view.fetchCmtsDestination
 
 @Composable
 fun UserRatingBar(
+    destination: Destination,
     modifier: Modifier = Modifier,
     size: Dp = 56.dp,
     ratingState: Int,
@@ -43,9 +58,9 @@ fun UserRatingBar(
     selectedColor: Color = Color(0xFFFFD700),
     unselectedColor: Color = Color(0xFFA2ADB1),
     rating: (Int) -> Unit,
-    newComment: (Comment) -> Unit,
+    newComment: (CommentDataDto) -> Unit,
     totalRating: Int,
-    sourceComments: List<Comment>
+    sourceComments: List<CommentData>
 ) {
 
     Text(
@@ -79,7 +94,7 @@ fun UserRatingBar(
         }
     }
 
-    AddCommentField(modifier = modifier, onClick = newComment, sourceComments = sourceComments)
+    AddCommentField(idDes= destination.id, modifier = modifier, onClick = newComment, sourceComments = sourceComments)
 
     Text(
         text = "Bình luận",
@@ -115,17 +130,17 @@ fun StarIcon(
 }
 
 @Composable
-fun CommentItem(modifier: Modifier = Modifier, comment: Comment) {
+fun CommentItem(modifier: Modifier = Modifier, comment: CommentData) {
     // Display the list of comment
     Text(
-        text = comment.user,
+        text = comment.username,
         style = MaterialTheme.typography.labelLarge,
         fontWeight = FontWeight.Bold,
         fontSize = 16.sp,
         modifier = modifier
     )
     Text(
-        text = comment.text,
+        text = comment.body,
         style = MaterialTheme.typography.bodySmall,
         fontSize = 15.sp,
         modifier = modifier
@@ -138,9 +153,11 @@ fun CommentItem(modifier: Modifier = Modifier, comment: Comment) {
 }
 
 @Composable
-fun AddCommentField(modifier: Modifier = Modifier, onClick: (Comment) -> Unit, sourceComments: List<Comment>) {
+fun AddCommentField(idDes: Int, modifier: Modifier = Modifier, onClick: (CommentDataDto) -> Unit, sourceComments: List<CommentData>) {
     val text = remember { mutableStateOf(TextFieldValue("")) }
     val keyboardController = LocalSoftwareKeyboardController.current
+    val corouScope = rememberCoroutineScope()
+    var res by remember { mutableStateOf(0) }
 
     OutlinedTextField(
         enabled = true,
@@ -155,9 +172,13 @@ fun AddCommentField(modifier: Modifier = Modifier, onClick: (Comment) -> Unit, s
             Icon(
                 Icons.AutoMirrored.Filled.Send,
                 modifier = Modifier.clickable {
-                    onClick(Comment("User", text.value.text))
-                    text.value = TextFieldValue("")
+                    val currentText = text.value.text
+                    onClick(CommentDataDto(0, "thanhtd", text.value.text))
+                    corouScope.launch(Dispatchers.IO) {
+                        res = createCommemtToDes(CommentDataDto(idDes = idDes, username = "thanhtd", body = currentText ))
+                    }
                     keyboardController?.hide()
+                    text.value = TextFieldValue("")
                                               },
                 contentDescription = null)}
     )

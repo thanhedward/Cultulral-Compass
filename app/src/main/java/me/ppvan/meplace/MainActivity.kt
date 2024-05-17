@@ -22,6 +22,8 @@ import me.ppvan.meplace.ui.page.PlacePage
 import me.ppvan.meplace.data.Comment
 import me.ppvan.meplace.ui.page.ProfileEditPassPage
 import me.ppvan.meplace.ui.theme.MePlaceTheme
+import me.ppvan.meplace.ui.view.CommentData
+import me.ppvan.meplace.ui.view.CommentDataDto
 import me.ppvan.meplace.ui.view.HomeView
 import me.ppvan.meplace.ui.view.LoginView
 import me.ppvan.meplace.ui.view.MemoryGame.MemoryGame
@@ -113,16 +115,16 @@ fun MePlaceApp() {
     }
 
     var comments by remember {
-        mutableStateOf(List(10) { mutableListOf<Comment>() })
+        mutableStateOf(List(10) { mutableListOf<CommentData>() })
     }
 
-    fun getComments(index: Int): List<Comment> {
+    fun getComments(index: Int): List<CommentData> {
         return comments[index]
     }
 
-    fun addComments(index: Int, comment: Comment) {
+    fun addComments(index: Int, comment: CommentDataDto) {
         comments = comments.toMutableList().apply{
-            this[index].add(comment)
+            this[index].add(CommentData("0", comment.idDes, comment.username, comment.body, "12-08"))
         }
     }
 
