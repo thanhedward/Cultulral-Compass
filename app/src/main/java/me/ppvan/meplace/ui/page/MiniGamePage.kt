@@ -50,7 +50,11 @@ fun MiniGamePage(
 ) {
     Scaffold(
         topBar = {
-            TopAppBar(title = { Text(text = "Danh sách trò chơi") })
+            TopAppBar(title = { Text(text = "MiniGame",
+                color = Color.Black,
+                fontSize = 24.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(top = 20.dp, start = 8.dp)) })
         }
     ) { paddingValues ->
 

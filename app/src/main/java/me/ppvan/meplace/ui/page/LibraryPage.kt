@@ -8,6 +8,10 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import me.ppvan.meplace.viewmodel.LibraryViewModel
 
 
@@ -19,7 +23,14 @@ fun LibraryPage(viewModel: LibraryViewModel, navigateToDetails: (Int) -> Unit) {
 
     Scaffold(
         topBar = {
-            TopAppBar(title = { Text(text = "Đã đăng ký") })
+            TopAppBar(title = {
+                Text(text = "Library",
+                    color = Color.Black,
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(top = 20.dp, start = 8.dp)
+                    )
+            })
         }
     ) { paddingValues ->
         Column(modifier = Modifier.padding(paddingValues)) {
