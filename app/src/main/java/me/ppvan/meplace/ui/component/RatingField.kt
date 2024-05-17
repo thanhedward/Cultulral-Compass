@@ -156,6 +156,7 @@ fun CommentItem(modifier: Modifier = Modifier, comment: CommentData) {
 @Composable
 fun AddCommentField(idDes: Int, modifier: Modifier = Modifier, onClick: (CommentDataDto) -> Unit, sourceComments: List<CommentData>) {
     val text = remember { mutableStateOf(TextFieldValue("")) }
+
     val corouScope = rememberCoroutineScope()
     var res by remember { mutableStateOf(0) }
     OutlinedTextField(
@@ -171,9 +172,11 @@ fun AddCommentField(idDes: Int, modifier: Modifier = Modifier, onClick: (Comment
             Icon(
                 Icons.AutoMirrored.Filled.Send,
                 modifier = Modifier.clickable {
-                    onClick(CommentDataDto(0, "User", text.value.text))
+                    val currentText = text.value.text
+                    onClick(CommentDataDto(0, "thanhtd", text.value.text))
+                    Log.i("Texttttt", text.value.text )
                     corouScope.launch(Dispatchers.IO) {
-                        res = createCommemtToDes(CommentDataDto(idDes = idDes, username = "User1", body = text.value.text))
+                        res = createCommemtToDes(CommentDataDto(idDes = idDes, username = "User1", body = currentText ))
                     }
                     text.value = TextFieldValue("")  },
                 contentDescription = null)}
