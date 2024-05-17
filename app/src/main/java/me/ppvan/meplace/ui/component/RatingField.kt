@@ -11,13 +11,11 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Send
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.outlined.StarBorder
-import androidx.compose.material3.Button
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -32,6 +30,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
@@ -156,9 +155,10 @@ fun CommentItem(modifier: Modifier = Modifier, comment: CommentData) {
 @Composable
 fun AddCommentField(idDes: Int, modifier: Modifier = Modifier, onClick: (CommentDataDto) -> Unit, sourceComments: List<CommentData>) {
     val text = remember { mutableStateOf(TextFieldValue("")) }
-
+    val keyboardController = LocalSoftwareKeyboardController.current
     val corouScope = rememberCoroutineScope()
     var res by remember { mutableStateOf(0) }
+
     OutlinedTextField(
         enabled = true,
         maxLines = 1,
@@ -174,11 +174,12 @@ fun AddCommentField(idDes: Int, modifier: Modifier = Modifier, onClick: (Comment
                 modifier = Modifier.clickable {
                     val currentText = text.value.text
                     onClick(CommentDataDto(0, "thanhtd", text.value.text))
-                    Log.i("Texttttt", text.value.text )
                     corouScope.launch(Dispatchers.IO) {
-                        res = createCommemtToDes(CommentDataDto(idDes = idDes, username = "User1", body = currentText ))
+                        res = createCommemtToDes(CommentDataDto(idDes = idDes, username = "thanhtd", body = currentText ))
                     }
-                    text.value = TextFieldValue("")  },
+                    keyboardController?.hide()
+                    text.value = TextFieldValue("")
+                                              },
                 contentDescription = null)}
     )
 }
