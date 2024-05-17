@@ -17,9 +17,9 @@ import me.ppvan.meplace.viewmodel.LibraryViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LibraryPage(viewModel: LibraryViewModel, navigateToDetails: (Int) -> Unit) {
+fun LibraryPage(viewModel: LibraryViewModel, navigateToDetails: (Int) -> Unit, favourite: List<Int> ) {
 
-    val visiblePlaces = viewModel.visiblePlaces
+    val visiblePlaces = viewModel.visiblePlaces.filterIndexed { index, _ -> index in favourite }
 
     Scaffold(
         topBar = {
