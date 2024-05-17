@@ -47,7 +47,7 @@ class LibraryViewModel constructor(private val destinationRepository: Destinatio
         Log.d("LibraryViewModel", "Load data")
         visiblePlaces.clear()
         viewModelScope.launch(Dispatchers.IO) {
-            val matches = destinationRepository.findDestinationByPredicate { it.isSubscribed }
+            val matches = destinationRepository.findPopulars()
 
             withContext(Dispatchers.Main) {
                 visiblePlaces.addAll(matches)

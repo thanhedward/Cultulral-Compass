@@ -8,6 +8,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import me.ppvan.meplace.ui.utils.noRippleClickable
@@ -20,7 +21,7 @@ fun CircleButton(
 ) {
     Surface(
         shape = CircleShape,
-        color = MaterialTheme.colorScheme.secondary,
+        color = Color.Transparent,
         modifier = Modifier
             .size(42.dp)
             .noRippleClickable { onClick() },
@@ -28,7 +29,7 @@ fun CircleButton(
         Image(
             imageVector = icon,
             contentDescription = "Default",
-            modifier = modifier.padding(all = 10.dp)
+            modifier = modifier.padding(all = 6.dp)
         )
     }
 }

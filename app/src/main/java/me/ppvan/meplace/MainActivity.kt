@@ -100,6 +100,10 @@ fun MePlaceApp() {
         mutableStateOf(List(10) { false })
     }
 
+    var bookmark by remember {
+        mutableStateOf(List(10) { false })
+    }
+
     var rates by remember {
         mutableStateOf(List(10) { 0 })
     }
@@ -136,6 +140,43 @@ fun MePlaceApp() {
         }
     }
 
+    fun getIndexesOfTrueFavorites(favorite: List<Boolean>): List<Int> {
+        val indexes = mutableListOf<Int>()
+        favorite.forEachIndexed { index, value ->
+            if (value) {
+                indexes.add(index + 1)
+            }
+        }
+        return indexes
+    }
+
+    fun getIndexesOfTrueBookmark(bookmark: List<Boolean>): List<Int> {
+        val indexes = mutableListOf<Int>()
+        bookmark.forEachIndexed { index, value ->
+            if (value) {
+                indexes.add(index + 1)
+            }
+        }
+        return indexes
+    }
+
+
+    fun isBookmarkAtIndex(index: Int): Boolean {
+        return if (index in bookmark.indices) {
+            bookmark[index]
+        } else {
+            false
+        }
+    }
+
+    fun updateBookMarkStatus(index: Int) {
+        if (index in bookmark.indices) {
+            bookmark = bookmark.toMutableList().apply {
+                this[index] = !this[index]
+            }
+        }
+    }
+
     fun isFavouriteAtIndex(index: Int): Boolean {
         return if (index in favourite.indices) {
             favourite[index]
@@ -159,7 +200,7 @@ fun MePlaceApp() {
         composable(route = Routes.Home.name) {
             HomeView(
                 navigator, homeViewModel, libraryViewModel, profileViewModel, gameViewModel,
-                navigateToDetails = { id -> navigator.navigate("${Routes.Place.name}/${id}") }, selectedPage, { newTab -> updateSelectedTab(newTab) }, {navigateToAboutMe()}, {navigator.navigate(Routes.Search.name)})
+                navigateToDetails = { id -> navigator.navigate("${Routes.Place.name}/${id}") }, selectedPage, { newTab -> updateSelectedTab(newTab) }, {navigateToAboutMe()}, {navigator.navigate(Routes.Search.name)}, favourite = getIndexesOfTrueBookmark(bookmark))
 
         }
         composable(route = Routes.Recommendation.name){
@@ -188,7 +229,9 @@ fun MePlaceApp() {
                     id -> navigator.navigate("${Routes.Restaurant.name}/${id}")
                 },
                 isFavouriteAtIndex(id.toInt() - 1),
+                isBookmarkAtIndex(id.toInt() - 1),
                 updateFavoriteDestination = {updateFavouriteStatus(id.toInt() - 1)},
+                updateBookMarkDestination = {updateBookMarkStatus(id.toInt() - 1)},
                 rating = {value -> setRate(id.toInt() - 1, value)},
                 currRate = getRate(id.toInt() - 1),
                 newComment = {value -> addComments(id.toInt() - 1, value)},

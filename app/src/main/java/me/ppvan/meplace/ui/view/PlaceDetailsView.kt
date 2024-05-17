@@ -18,7 +18,10 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Bookmark
+import androidx.compose.material.icons.filled.BookmarkBorder
 import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.outlined.BookmarkBorder
 import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -59,7 +62,9 @@ fun PlaceDetailsView(
     onBackPress: () -> Unit,
     navigateToDetail: (Int) -> Unit,
     isFavorite: Boolean,
+    isBookMark: Boolean,
     updateFavoriteDestination: () -> Unit,
+    updateBookMarkDestination: () -> Unit,
     rating: (Int) -> Unit,
     currRate: Int,
     newComment: (CommentDataDto) -> Unit,
@@ -97,12 +102,6 @@ fun PlaceDetailsView(
         destination = viewModel.getDetailById(id)
         restaurant = viewModel.getResDetailById(id)
     }
-
-    LaunchedEffect(clickCounter) {
-        coroutineScope.launch(Dispatchers.IO) {
-            currentData = fetchCmtsDestination(id)
-        }
-    }
     Scaffold  {
         innerPadding ->
         Column(
@@ -121,9 +120,11 @@ fun PlaceDetailsView(
                     modifier = Modifier,
                     navigateBack = onBackPress,
                     isFavorite = isFavorite,
+                    isBookMark = isBookMark,
                     favoriteClick = {
                         updateFavoriteDestination()
-                    }
+                    },
+                    bookmarkClick = { updateBookMarkDestination()}
                 )
             }
         DetailContent(modifier = Modifier, destination = destination)
@@ -132,7 +133,9 @@ fun PlaceDetailsView(
 
         UserRatingBar(
             destination = destination,
-            modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp).clickable { clickCounter++ },
+            modifier = Modifier
+                .padding(horizontal = 24.dp, vertical = 8.dp)
+                .clickable { clickCounter++ },
             ratingState = currRate,
             rating = rating,
             newComment = newComment,
@@ -201,8 +204,10 @@ fun DetailContent(modifier: Modifier, destination: Destination) {
 fun Header(
     modifier: Modifier,
     isFavorite: Boolean,
+    isBookMark: Boolean,
     navigateBack: () -> Unit,
     favoriteClick: () -> Unit,
+    bookmarkClick: () -> Unit,
 ) {
     Row(
         horizontalArrangement = Arrangement.SpaceBetween, modifier = modifier
@@ -214,10 +219,17 @@ fun Header(
             onClick = navigateBack,
             icon = Icons.AutoMirrored.Filled.ArrowBack
         )
-        CircleButton(
-            onClick = favoriteClick,
-            icon = if (isFavorite) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
-        )
+        Row {
+            CircleButton(
+                onClick = favoriteClick,
+                icon = if (isFavorite) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
+            )
+            CircleButton(
+                onClick = bookmarkClick,
+                icon = if (isBookMark) Icons.Filled.Bookmark else Icons.Outlined.BookmarkBorder,
+            )
+        }
+
     }
 }
 

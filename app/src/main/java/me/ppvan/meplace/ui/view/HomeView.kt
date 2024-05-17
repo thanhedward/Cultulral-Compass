@@ -54,7 +54,8 @@ fun HomeView(
     selectedPage: PlacePages,
     updateSelectedPage: (PlacePages) -> Unit,
     navigateToAboutMe: () -> Unit,
-    navigateToSearch: () -> Unit
+    navigateToSearch: () -> Unit,
+    favourite: List<Int>
 ) {
 
     Scaffold(
@@ -92,7 +93,7 @@ fun HomeView(
                 )
 
                 PlacePages.Profile -> ProfilePage(profileViewModel, navController)
-                PlacePages.Library -> LibraryPage(libraryViewModel, navigateToDetails)
+                PlacePages.Library -> LibraryPage(libraryViewModel, navigateToDetails, favourite)
                 PlacePages.MiniGame -> MiniGamePage(navController, gameViewModel)
             }
 
