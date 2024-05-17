@@ -10,13 +10,11 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Send
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.outlined.StarBorder
-import androidx.compose.material3.Button
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -26,6 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
@@ -141,6 +140,8 @@ fun CommentItem(modifier: Modifier = Modifier, comment: Comment) {
 @Composable
 fun AddCommentField(modifier: Modifier = Modifier, onClick: (Comment) -> Unit, sourceComments: List<Comment>) {
     val text = remember { mutableStateOf(TextFieldValue("")) }
+    val keyboardController = LocalSoftwareKeyboardController.current
+
     OutlinedTextField(
         enabled = true,
         maxLines = 1,
@@ -153,8 +154,11 @@ fun AddCommentField(modifier: Modifier = Modifier, onClick: (Comment) -> Unit, s
         trailingIcon = {
             Icon(
                 Icons.AutoMirrored.Filled.Send,
-                modifier = Modifier.clickable { onClick(Comment("User", text.value.text))
-                    text.value = TextFieldValue("")  },
+                modifier = Modifier.clickable {
+                    onClick(Comment("User", text.value.text))
+                    text.value = TextFieldValue("")
+                    keyboardController?.hide()
+                                              },
                 contentDescription = null)}
     )
 }
