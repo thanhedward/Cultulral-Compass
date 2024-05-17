@@ -20,6 +20,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Mic
 import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.outlined.ArrowBack
+import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.Place
 import androidx.compose.material.icons.outlined.Search
@@ -52,7 +54,7 @@ import me.ppvan.meplace.R
 import me.ppvan.meplace.ui.component.SpeechToTextButton
 
 @Composable
-fun PlacePage(viewModel: PlaceViewModel, navigateToDetails: (Int) -> Unit) {
+fun PlacePage(viewModel: PlaceViewModel, navigateToDetails: (Int) -> Unit, onBack: () -> Unit) {
 
     val query by viewModel.query
     val active by viewModel.active
@@ -72,7 +74,9 @@ fun PlacePage(viewModel: PlaceViewModel, navigateToDetails: (Int) -> Unit) {
             viewModel::onSuggesting,
             viewModel::onSearchPlace,
             viewModel::onActiveChange,
+            onBack,
             viewModel
+
         )
         Spacer(modifier = Modifier.height(15.dp))
         PlaceList(places = results, onItemClick = navigateToDetails)
@@ -89,49 +93,74 @@ fun MePlaceTopBar(
     onQueryChange: (String) -> Unit,
     onSearch: (String) -> Unit,
     onActiveChange: (Boolean) -> Unit,
+    onBack: () -> Unit,
     viewModel: PlaceViewModel
 ) {
     val horizontalPadding = if (active) 0.dp else 16.dp
 
-    SearchBar(
-        modifier =  Modifier.padding(horizontal = horizontalPadding)
+    Row(
+        modifier = Modifier
+            .padding(horizontal = horizontalPadding)
             .fillMaxWidth(),
-        leadingIcon = {
-            Icon(
-                imageVector = Icons.Outlined.Search,
-                contentDescription = "Search"
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+
+        SearchBar(
+            modifier = Modifier
+                .weight(1f),
+            leadingIcon = {
+                if(!active) {
+                    Icon(
+                        imageVector = Icons.Outlined.Home,
+                        contentDescription = "Search",
+                        modifier = Modifier.padding(end = 10.dp).clickable { onBack() }
+                    )
+                } else {
+                    Icon(
+                        imageVector = Icons.Outlined.ArrowBack,
+                        contentDescription = "Search",
+                        modifier = Modifier.padding(end = 10.dp).clickable (onClick = {onActiveChange(false)} )
+                    )
+                }
+
+            },
+            trailingIcon = {
+                SpeechToTextButton { spokenText ->
+                    viewModel.onSearchPlace(spokenText)
+                }
+            },
+            placeholder = { Text(
+                text = "Find a place",
+
             )
-        },
-        trailingIcon = {
-            SpeechToTextButton {spokenText ->
-                viewModel.onSearchPlace(spokenText)
-            }
-        },
-        placeholder = { Text(text = "Find a place") },
-        shape = SearchBarDefaults.inputFieldShape,
-        query = query,
-        onQueryChange = onQueryChange,
-        onSearch = onSearch,
-        active = active,
-        onActiveChange = onActiveChange
-    )
-    {
-        LazyColumn() {
-            items(suggestions) { place ->
-                ListItem(
-                    modifier = Modifier.clickable { onSearch(place.name) },
-                    headlineContent = { Text(text = place.name) },
-                    leadingContent = {
-                        Icon(
-                            imageVector = Icons.Outlined.Search,
-                            contentDescription = "Search Icon"
-                        )
-                    }
-                )
+
+                          },
+            shape = SearchBarDefaults.inputFieldShape,
+            query = query,
+            onQueryChange = onQueryChange,
+            onSearch = onSearch,
+            active = active,
+            onActiveChange = onActiveChange
+        ) {
+            LazyColumn {
+                items(suggestions) { place ->
+                    ListItem(
+                        modifier = Modifier.clickable { onSearch(place.name) },
+                        headlineContent = { Text(text = place.name) },
+                        leadingContent = {
+                            Icon(
+                                imageVector = Icons.Outlined.Search,
+                                contentDescription = "Search Icon"
+                            )
+                        }
+                    )
+                }
             }
         }
+
     }
 }
+
 
 
 

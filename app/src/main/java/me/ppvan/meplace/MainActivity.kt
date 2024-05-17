@@ -156,7 +156,7 @@ fun MePlaceApp() {
     NavHost(navController = navigator, startDestination = Routes.Home.name) {
         composable(route = Routes.Home.name) {
             HomeView(
-                navigator, homeViewModel, placeViewModel, libraryViewModel, profileViewModel, gameViewModel,
+                navigator, homeViewModel, libraryViewModel, profileViewModel, gameViewModel,
                 navigateToDetails = { id -> navigator.navigate("${Routes.Place.name}/${id}") }, selectedPage, { newTab -> updateSelectedTab(newTab) }, {navigateToAboutMe()}, {navigator.navigate(Routes.Search.name)})
 
         }
@@ -195,7 +195,7 @@ fun MePlaceApp() {
         }
 
         composable(route = Routes.Search.name) {
-            PlacePage(placeViewModel, navigateToDetails = { id -> navigator.navigate("${Routes.Place.name}/${id}") })
+            PlacePage(placeViewModel, navigateToDetails = { id -> navigator.navigate("${Routes.Place.name}/${id}") }, onBack = {navigator.navigate(Routes.Home.name); selectedPage = PlacePages.Home})
         }
 
         composable(

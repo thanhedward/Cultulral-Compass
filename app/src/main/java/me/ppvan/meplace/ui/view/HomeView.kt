@@ -47,7 +47,6 @@ import me.ppvan.moon.utils.SlideTransition
 fun HomeView(
     navController: NavHostController,
     homeViewModel: HomeViewModel,
-    placeViewModel: PlaceViewModel,
     libraryViewModel: LibraryViewModel,
     profileViewModel: ProfileViewModel,
     gameViewModel: GameViewModel,
@@ -92,7 +91,6 @@ fun HomeView(
                     navController
                 )
 
-                PlacePages.Place -> PlacePage(placeViewModel, navigateToDetails)
                 PlacePages.Profile -> ProfilePage(profileViewModel, navController)
                 PlacePages.Library -> LibraryPage(libraryViewModel, navigateToDetails)
                 PlacePages.MiniGame -> MiniGamePage(navController, gameViewModel)
@@ -131,7 +129,6 @@ enum class PlacePages constructor(
     val selectedIcon: @Composable () -> ImageVector
 ) {
     Home(icon = { Icons.Outlined.Home }, selectedIcon = { Icons.Filled.Home }),
-    Place(icon = { Icons.Outlined.Place }, selectedIcon = { Icons.Filled.Place }),
     Library(icon = { Icons.Outlined.BookmarkBorder }, selectedIcon = { Icons.Filled.Bookmark }),
     MiniGame(icon = {Icons.Outlined.VideogameAsset}, selectedIcon = {Icons.Filled.VideogameAsset}),
     Profile(icon = { Icons.Outlined.Person }, selectedIcon = { Icons.Filled.Person })
