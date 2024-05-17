@@ -254,7 +254,6 @@ fun HomeHeader(modifier: Modifier = Modifier, user: User, navigateToAboutMe: () 
                     .clip(shape = CircleShape),
                 contentDescription = stringResource(id = R.string.app_name),
             )
-
         }
     }
 }

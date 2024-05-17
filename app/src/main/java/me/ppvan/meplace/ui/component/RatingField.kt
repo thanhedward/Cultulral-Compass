@@ -2,6 +2,7 @@ package me.ppvan.meplace.ui.component
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -13,6 +14,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -78,6 +80,8 @@ fun UserRatingBar(
         }
     }
 
+    AddCommentField(modifier = modifier, onClick = newComment, sourceComments = sourceComments)
+
     Text(
         text = "Bình luận",
         fontWeight = FontWeight.Medium,
@@ -89,7 +93,7 @@ fun UserRatingBar(
         CommentItem(modifier = modifier, comment = comment)
     }
 
-    addCommentField(modifier = modifier, onClick = newComment, sourceComments = sourceComments)
+
 }
 
 @OptIn(ExperimentalComposeUiApi::class)
@@ -135,27 +139,22 @@ fun CommentItem(modifier: Modifier = Modifier, comment: Comment) {
 }
 
 @Composable
-fun addCommentField(modifier: Modifier = Modifier, onClick: (Comment) -> Unit, sourceComments: List<Comment>) {
+fun AddCommentField(modifier: Modifier = Modifier, onClick: (Comment) -> Unit, sourceComments: List<Comment>) {
     val text = remember { mutableStateOf(TextFieldValue("")) }
-    Row(
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        TextField(
-            enabled = true,
-            value = text.value,
-            onValueChange = { text.value = it },
-            placeholder = { Text("Thêm bình luận") },
-            shape = RoundedCornerShape(8.dp),
-            modifier = modifier.weight(1f)
-        )
-        Button(
-            onClick = {
-                onClick(Comment("User", text.value.text))
-                text.value = TextFieldValue("")
-                      },
-            modifier = modifier.padding(end = 4.dp).clickable {  }
-        ) {
-            Icon(Icons.AutoMirrored.Filled.Send, contentDescription = null)
-        }
-    }
+    OutlinedTextField(
+        enabled = true,
+        maxLines = 1,
+        modifier = Modifier.fillMaxWidth()
+            .padding(start = 9.dp, end = 9.dp, bottom = 9.dp, top = 20.dp),
+        value = text.value,
+        onValueChange = { text.value = it },
+        placeholder = { Text("Thêm bình luận") },
+        shape = RoundedCornerShape(50),
+        trailingIcon = {
+            Icon(
+                Icons.AutoMirrored.Filled.Send,
+                modifier = Modifier.clickable { onClick(Comment("User", text.value.text))
+                    text.value = TextFieldValue("")  },
+                contentDescription = null)}
+    )
 }
