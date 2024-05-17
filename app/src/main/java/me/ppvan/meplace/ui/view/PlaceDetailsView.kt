@@ -1,5 +1,6 @@
 package me.ppvan.meplace.ui.view
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -61,18 +62,17 @@ fun PlaceDetailsView(
     updateFavoriteDestination: () -> Unit,
     rating: (Int) -> Unit,
     currRate: Int,
-    newComment: (Comment) -> Unit,
-    comments: List<Comment>
+    newComment: (CommentDataDto) -> Unit,
+    comments: List<CommentData>
 ) {
-
-    var data by remember { mutableStateOf("Loading...") }
+    var currentData by remember { mutableStateOf<List<CommentData>>(emptyList()) }
     val coroutineScope = rememberCoroutineScope()
+    var clickCounter by remember { mutableStateOf(0) }
 
-    LaunchedEffect(Unit) {
-        coroutineScope.launch(Dispatchers.IO) {
-            data = fetchDataFromApi()
-        }
-    }
+
+
+
+    Log.i("Listcmt", currentData.toString())
 
     val viewModel = viewModel<PlaceDetailsViewModel>(factory = viewModelFactory {
         PlaceDetailsViewModel(MePlaceApplication.appModule.resRepo, MePlaceApplication.appModule.placeRepo)
@@ -97,6 +97,12 @@ fun PlaceDetailsView(
         destination = viewModel.getDetailById(id)
         restaurant = viewModel.getResDetailById(id)
     }
+
+    LaunchedEffect(clickCounter) {
+        coroutineScope.launch(Dispatchers.IO) {
+            currentData = fetchCmtsDestination(id)
+        }
+    }
     Scaffold  {
         innerPadding ->
         Column(
@@ -120,21 +126,18 @@ fun PlaceDetailsView(
                     }
                 )
             }
-            Text(
-                text = data,
-                modifier = Modifier.fillMaxWidth(),
-            )
         DetailContent(modifier = Modifier, destination = destination)
 
         ResListRecommend(resList = viewModel.restaurants, modifier = Modifier, navigateToDetail)
 
         UserRatingBar(
-            modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp),
+            destination = destination,
+            modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp).clickable { clickCounter++ },
             ratingState = currRate,
             rating = rating,
             newComment = newComment,
             totalRating = destination.rate,
-            sourceComments = destination.comments + comments
+            sourceComments = currentData
         )
 
     }
@@ -186,7 +189,8 @@ fun DetailContent(modifier: Modifier, destination: Destination) {
             overflow = TextOverflow.Ellipsis,
             lineHeight = 26.sp,
             fontSize = 16.sp,
-            modifier = modifier.padding(bottom = 6.dp)
+            modifier = modifier
+                .padding(bottom = 6.dp)
                 .clickable {
                     maxDescriptionLines = if (maxDescriptionLines == 4) 20 else 4
                 }
