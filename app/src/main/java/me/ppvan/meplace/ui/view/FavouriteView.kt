@@ -37,7 +37,8 @@ fun FavouriteView(
         modifier = Modifier.fillMaxSize(),
         topBar = {
             CenterAlignedTopAppBar(
-                title = { Text(
+                title = {
+                    Text(
                     text = "Danh sách yêu thích",
                     fontSize = 18.sp,
                     fontWeight = FontWeight.SemiBold
@@ -60,12 +61,10 @@ fun FavouriteView(
             ) {
                 RecommendationGrid(
                     modifier = Modifier,
-                    navigateToDetail = navigateToDetail
-                    ,
-                    recommendations = viewModel.recommendations
+                    navigateToDetail = navigateToDetail,
+                    recommendations = visiblePlaces
                 )
             }
-
         },
         bottomBar = {
             MePlaceNavigationBar(
