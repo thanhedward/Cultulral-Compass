@@ -23,14 +23,16 @@ import me.ppvan.meplace.viewmodel.HomeViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun RecommendationView(
+fun FavouriteView(
     viewModel: HomeViewModel,
     selectedPage: PlacePages,
     updateSelectedPage: (PlacePages) -> Unit,
     navigator: NavHostController,
     navigateToDetail: (Int) -> Unit,
-) {
+    favourite: List<Int>
 
+) {
+    val visiblePlaces = viewModel.recommendations.filterIndexed { index, _ -> index in favourite }
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {

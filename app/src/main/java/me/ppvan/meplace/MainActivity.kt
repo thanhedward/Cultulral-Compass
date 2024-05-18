@@ -24,6 +24,7 @@ import me.ppvan.meplace.ui.page.ProfileEditPassPage
 import me.ppvan.meplace.ui.theme.MePlaceTheme
 import me.ppvan.meplace.ui.view.CommentData
 import me.ppvan.meplace.ui.view.CommentDataDto
+import me.ppvan.meplace.ui.view.FavouriteView
 import me.ppvan.meplace.ui.view.HomeView
 import me.ppvan.meplace.ui.view.LoginView
 import me.ppvan.meplace.ui.view.MemoryGame.MemoryGame
@@ -287,6 +288,17 @@ fun MePlaceApp() {
             QuizGameView(navigator, profileViewModel, gameViewModel)
         }
 
+        composable(route = Routes.Favourite.name){
+            FavouriteView(
+                viewModel = homeViewModel,
+                selectedPage = selectedPage,
+                updateSelectedPage = { newTab -> updateSelectedTab(newTab) },
+                navigator = navigator,
+                navigateToDetail = { id -> navigator.navigate("${Routes.Place.name}/${id}") },
+                favourite = getIndexesOfTrueFavorites(favourite)
+            )
+        }
+
         composable(route = Routes.MemoryGame.name) {
             MemoryGame(
                 state = memoryGameViewModel.state,
@@ -310,7 +322,7 @@ fun MePlaceApp() {
 }
 
 enum class Routes {
-    Home, Place, Register, Login, QuizGame, MemoryGame, ChangePass, Restaurant, Recommendation, Search
+    Home, Place, Register, Login, QuizGame, MemoryGame, ChangePass, Restaurant, Recommendation, Search, Favourite
 }
 
 @Preview(showBackground = true)

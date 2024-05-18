@@ -478,7 +478,7 @@ fun ProfileViewPage(
                             label = "Danh sách địa điểm yêu thích",
 
                             ){
-
+                            navController.navigate(Routes.Favourite.name)
                         }
 
                         ProfileListItem(
