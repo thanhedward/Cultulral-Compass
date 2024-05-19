@@ -481,17 +481,17 @@ fun ProfileViewPage(
                             navController.navigate(Routes.Favourite.name)
                         }
 
-                        ProfileListItem(
-                            icon = {
-                                Icon(
-                                    imageVector = Icons.Default.ListAlt,
-                                    contentDescription = null,
-                                    tint = MaterialTheme.colorScheme.primary,
-                                    modifier = Modifier.size(30.dp)
-                                )
-                            },
-                            label = "Danh sách địa điểm đã đến",
-                        ){}
+//                        ProfileListItem(
+//                            icon = {
+//                                Icon(
+//                                    imageVector = Icons.Default.ListAlt,
+//                                    contentDescription = null,
+//                                    tint = MaterialTheme.colorScheme.primary,
+//                                    modifier = Modifier.size(30.dp)
+//                                )
+//                            },
+//                            label = "Danh sách địa điểm đã đến",
+//                        ){}
                     }
                 }
 

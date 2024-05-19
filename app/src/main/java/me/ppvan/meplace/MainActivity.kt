@@ -197,7 +197,7 @@ fun MePlaceApp() {
 
     val memoryGameViewModel = viewModel<MemoryGameViewModel>()
 
-    NavHost(navController = navigator, startDestination = Routes.Home.name) {
+    NavHost(navController = navigator, startDestination = Routes.Login.name) {
         composable(route = Routes.Home.name) {
             HomeView(
                 navigator, homeViewModel, libraryViewModel, profileViewModel, gameViewModel,

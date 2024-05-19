@@ -2,12 +2,15 @@ package me.ppvan.meplace.ui.component
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -19,21 +22,19 @@ fun CircleButton(
     modifier: Modifier = Modifier,
     onClick: () -> Unit,
     icon: ImageVector,
-    iconColor: Color = Color.Gray
+    iconColor: Color = Color.Black
 ) {
-    Surface(
-        shape = CircleShape,
-        color = Color.Transparent,
-        border = BorderStroke(2.dp, Color.Gray),
+    Box(
         modifier = Modifier
-            .size(42.dp)
+            .clip(CircleShape)
             .noRippleClickable { onClick() },
     ) {
         Image(
             imageVector = icon,
             contentDescription = "Default",
             colorFilter = ColorFilter.tint(iconColor),
-            modifier = modifier.padding(all = 6.dp)
+            modifier = modifier.background(Color.Gray)
+                .padding(8.dp)
         )
     }
 }

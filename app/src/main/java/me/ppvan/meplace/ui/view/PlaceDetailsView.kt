@@ -44,6 +44,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import me.ppvan.meplace.MePlaceApplication
 import me.ppvan.meplace.data.Destination
 import me.ppvan.meplace.data.Restaurant
@@ -100,6 +102,12 @@ fun PlaceDetailsView(
     LaunchedEffect(key1 = id) {
         destination = viewModel.getDetailById(id)
         restaurant = viewModel.getResDetailById(id)
+    }
+
+    LaunchedEffect(clickCounter) {
+        coroutineScope.launch(Dispatchers.IO) {
+            currentData = fetchCmtsDestination(id)
+        }
     }
     Scaffold  {
         innerPadding ->
@@ -222,13 +230,13 @@ fun Header(
             CircleButton(
                 onClick = favoriteClick,
                 icon = if (isFavorite) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
-                iconColor = if (isFavorite) Color.Red else Color.Gray
+                iconColor = if (isFavorite) Color.Red else Color.Black
             )
             Spacer(modifier = Modifier.width(10.dp))
             CircleButton(
                 onClick = bookmarkClick,
                 icon = if (isBookMark) Icons.Filled.Bookmark else Icons.Outlined.BookmarkBorder,
-                iconColor = if (isBookMark) Color.Yellow else Color.Gray
+                iconColor = if (isBookMark) Color.Yellow else Color.Black
             )
         }
 
